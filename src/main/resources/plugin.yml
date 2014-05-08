@@ -1,0 +1,10 @@
+name: AIMCME
+main: co.mcme.ai.mcme.AIMCME
+version: ${project.version}
+website: ${project.url}
+authors: [DonoA]
+description: npc conversations.
+author: DonoA
+commands:
+  say:
+    usage: /say <words>
