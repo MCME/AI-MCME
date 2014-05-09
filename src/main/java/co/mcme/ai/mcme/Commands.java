@@ -6,6 +6,7 @@
 
 package co.mcme.ai.mcme;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ class Commands implements CommandExecutor {
            if(args.length == 0){
                return false;
            }
+           player.sendMessage(ChatColor.AQUA + "There is no reply...");
         } else {
            sender.sendMessage("You must be a player!");
            return false;
