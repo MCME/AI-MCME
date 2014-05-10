@@ -13,8 +13,16 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author Donovan
  */
 public class AIMCME extends JavaPlugin {
-    @Override
+    
+    static AIMCME pluginInstance;
+    
+    @Override    
     public void onEnable(){
+        pluginInstance = this;
         getCommand("say").setExecutor(new Commands());
+    }
+    
+    public static AIMCME getPlugin(){
+        return pluginInstance;
     }
 }
