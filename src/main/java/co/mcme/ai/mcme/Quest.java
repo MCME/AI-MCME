@@ -13,7 +13,10 @@ import java.util.List;
  *
  * @author Donovan
  */
-public class AImanager {
+public class Quest{
+    public Quest(){
+        
+    }
     public List<String> getAI(String input, String npc){
         List<String> Returner = new ArrayList<String>();
         
