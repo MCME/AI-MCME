@@ -52,7 +52,6 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                return false;
             }
             Polygon area;
-            Rectangle2D bounds;
             int zbounds[] = {-217, -167}; //2047 -197
             int xbounds[] = {2047, 2080};
             area = new Polygon(xbounds, zbounds, xbounds.length);
