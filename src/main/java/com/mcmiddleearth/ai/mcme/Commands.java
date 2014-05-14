@@ -8,7 +8,9 @@ package com.mcmiddleearth.ai.mcme;
 
 import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,6 +34,8 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     
     private final ConversationFactory conversationFactory;
     
+    private Quest currQuest;
+    
     private Player player;
     
     public Commands() {
@@ -51,21 +55,43 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
             if(args.length == 0){
                return false;
             }
-            Polygon area;
-            int zbounds[] = {-217, -167}; //2047 -197
-            int xbounds[] = {2047, 2080};
-            area = new Polygon(xbounds, zbounds, xbounds.length);
-            if(area.getBounds2D().contains(player.getLocation().getX(), player.getLocation().getZ()) && Arrays.toString(args).contains("Teebeard")){
-                if(sender instanceof Conversable){
-                    conversationFactory.buildConversation((Conversable) sender).begin();
+            List<String> argz = new ArrayList(Arrays.asList(args));
+            List<Integer> ids = new ArrayList<Integer>();
+            for(String arg : argz){
+                if(!ids.contains(DBmanager.QuestKeys.get(arg))){
+                    ids.add(DBmanager.QuestKeys.get(arg));
                 }
             }
-           player.sendMessage(ChatColor.GRAY + "There is no reply...");
+            if(ids.size()==1){
+                currQuest = DBmanager.Quests.get(ids);
+                conversationFactory.buildConversation((Conversable) sender).begin();
+                return true;
+            }
+            if(ids.isEmpty()){
+                player.sendMessage(ChatColor.GRAY + "There is no reply...");
+                return true;
+            }
+            for(Integer i : ids){
+                if(!DBmanager.Quests.get(i).inBounds(player) || DBmanager.Quests.get(i).MatchKeys(argz)){
+                    ids.remove(i);
+                }
+            }
+            if(ids.size()==1){
+                currQuest = DBmanager.Quests.get(ids);
+                conversationFactory.buildConversation((Conversable) sender).begin();
+                return true;
+            }else if(ids.isEmpty()){
+                player.sendMessage(ChatColor.GRAY + "There is no reply...");
+                return true;
+            }else{
+                player.sendMessage("Thats and error, please report it =)");
+                player.sendMessage("http://www.mcmiddleearth.com/conversations/add?to=dallen1393");
+                return false;
+            }
         } else {
            sender.sendMessage("You must be a player!");
            return false;
         }
-        return true;
     }
 
     @Override
@@ -78,7 +104,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPrefix(ConversationContext context) {
             String prefix = ChatColor.AQUA + "";
-            prefix += "npc:";
+            prefix = prefix + currQuest.getNPC() + ":";
             return prefix;
         }
 
@@ -88,21 +114,16 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPromptText(ConversationContext context) {
             if (context.getSessionData("PlayerTalk") == null) {
-                return "Hello " + player.getName();
+                context.setSessionData("NpcTalk", currQuest.getAI("", true));
             }else{
                 return context.getSessionData("NpcTalk").toString();
             }
+            return context.getSessionData("NpcTalk").toString();
         }
-
-
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
-            if(input.contains("star")){
-                context.setSessionData("NpcTalk", "I think Bilbo has some stars somewhere...");
-                return new speaking();
-            }
-            context.setSessionData("NpcTalk", "I didn't catch that.");
+            context.setSessionData("NpcTalk", currQuest.getAI(input, false));
             return new speaking();
         }
     }

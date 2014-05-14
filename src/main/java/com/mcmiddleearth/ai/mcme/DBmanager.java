@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static java.util.Arrays.sort;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -34,9 +35,7 @@ public class DBmanager {
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
     public void saveclass(Player player){
-        if (!questDB.exists()) {
-            questDB.mkdirs();
-        }
+        firstLoad();
         boolean successful = true;
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() + ".questdat");
@@ -62,9 +61,9 @@ public class DBmanager {
         }
     }
     public void loadclass(Player player){
-        if (!questDB.exists()) {
-            boolean successful = true;
-            File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
+        firstLoad();
+        File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
+        if (save.exists()) {
             try {
                 Scanner s;
                 s = new Scanner(save);
@@ -80,11 +79,11 @@ public class DBmanager {
                 currQuests.put(player, currquest);
             } catch (IOException ex) {
                 Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
-                successful = false;
             }
         }
     }
     public int loadQuests(){
+        firstLoad();
         int loaded = 0;
         File QuestDB = new File(questDB + System.getProperty("file.separator") + "QuestDB");
         File questSave = new File(QuestDB, + loaded +  ".quest");
@@ -92,11 +91,14 @@ public class DBmanager {
             try {
                 Scanner s;
                 s = new Scanner(questSave);
-                int Bounds[][] = new int[2][2]; // (x,z)
-                Bounds[0][0] = Integer.parseInt(s.nextLine());
-                Bounds[1][0] = Integer.parseInt(s.nextLine());
-                Bounds[0][1] = Integer.parseInt(s.nextLine());
-                Bounds[1][1] = Integer.parseInt(s.nextLine());
+                int Boundsx[] = new int[2]; //
+                int Boundsz[] = new int[2]; //
+                Boundsx[0] = Integer.parseInt(s.nextLine());
+                Boundsx[1] = Integer.parseInt(s.nextLine());
+                Boundsz[0] = Integer.parseInt(s.nextLine());
+                Boundsz[1] = Integer.parseInt(s.nextLine());
+                sort(Boundsx);
+                sort(Boundsz);
                 String npc = s.nextLine();
                 List<String> Keys = new ArrayList<String>();
                 String line;
@@ -105,7 +107,7 @@ public class DBmanager {
                     Keys.add(line);
                     QuestKeys.put(line, loaded);
                 }
-                Quest q = new Quest(loaded,Keys,npc,Bounds);
+                Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz);
                 Quests.put(loaded, q);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
@@ -115,5 +117,18 @@ public class DBmanager {
             questSave = new File(QuestDB, + loaded +  ".quest");
         }
         return loaded;
+    }
+    public void firstLoad(){
+        if(!questDB.exists()) {
+            questDB.mkdirs();
+        }
+        File QuestDB = new File(questDB + System.getProperty("file.separator") + "QuestDB");
+        if(!QuestDB.exists()){
+            QuestDB.mkdir();
+        }
+        File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat");
+        if(!save.exists()){
+            save.mkdir();
+        }
     }
 }

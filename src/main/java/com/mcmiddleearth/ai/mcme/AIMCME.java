@@ -21,7 +21,10 @@ public class AIMCME extends JavaPlugin {
         pluginInstance = this;
         getCommand("say").setExecutor(new Commands());
     }
-    
+    @Override
+    public void onDisable(){
+        
+    }
     public static AIMCME getPlugin(){
         return pluginInstance;
     }
