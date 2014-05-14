@@ -82,9 +82,10 @@ public class DBmanager {
             }
         }
     }
-    public int loadQuests(){
+    public static int loadQuests(){
         firstLoad();
         int loaded = 0;
+        File questDB = new File(AIMCME.getPlugin().getDataFolder() + System.getProperty("file.separator") + "Quests");
         File QuestDB = new File(questDB + System.getProperty("file.separator") + "QuestDB");
         File questSave = new File(QuestDB, + loaded +  ".quest");
         while(questSave.exists()){
@@ -118,7 +119,8 @@ public class DBmanager {
         }
         return loaded;
     }
-    public void firstLoad(){
+    public static void firstLoad(){
+        File questDB = new File(AIMCME.getPlugin().getDataFolder() + System.getProperty("file.separator") + "Quests");
         if(!questDB.exists()) {
             questDB.mkdirs();
         }
