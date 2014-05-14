@@ -62,7 +62,27 @@ public class DBmanager {
         }
     }
     public void loadclass(Player player){
-        
+        if (!questDB.exists()) {
+            boolean successful = true;
+            File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
+            try {
+                Scanner s;
+                s = new Scanner(save);
+                String line = s.nextLine();
+                List<String> items = Arrays.asList(line.split("\\s*,\\s*"));
+                List<Integer> ids = new ArrayList<Integer>();
+                for(String value : items){
+                    ids.add(Integer.valueOf(value));
+                }
+                String l = s.nextLine();
+                int currid = Integer.valueOf(l);
+                Questdat currquest = new Questdat(player, ids, currid);
+                currQuests.put(player, currquest);
+            } catch (IOException ex) {
+                Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
+                successful = false;
+            }
+        }
     }
     public int loadQuests(){
         int loaded = 0;
@@ -96,8 +116,4 @@ public class DBmanager {
         }
         return loaded;
     }
-//    public Quest loadQuest(String name){
-//        //Quest holder = new Quest();
-//        return holder;
-//    }
 }

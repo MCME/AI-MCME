@@ -30,4 +30,7 @@ public class Questdat {
     public int getCurrent(){
         return current;
     }
+    public void stopQuest(){
+        DBmanager.currQuests.remove(player);
+    }
 }
