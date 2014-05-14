@@ -37,8 +37,11 @@ public class Quest{
             case "TB1":
                 if(input.contains("star") && input.contains("dunedain")){
                     return "I think there is a star in Bag End...Somewhere";
+                }else{
+                    return "I don't understand...";
                 }
-            break;
+            case "TB2":
+                
         }
         return Returner;
     }
