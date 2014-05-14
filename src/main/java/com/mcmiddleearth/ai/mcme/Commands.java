@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package co.mcme.ai.mcme;
+package com.mcmiddleearth.ai.mcme;
 
 import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;

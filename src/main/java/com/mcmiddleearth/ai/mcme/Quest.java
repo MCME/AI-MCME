@@ -4,22 +4,24 @@
  * and open the template in the editor.
  */
 
-package co.mcme.ai.mcme;
+package com.mcmiddleearth.ai.mcme;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  *
  * @author Donovan
  */
 public class Quest{
+    public Quest(int id, List<String> Keys, String npc, int Bounds[][]){
+        
+    }
     public Quest(){
         
     }
-    public List<String> getAI(String input, String npc){
-        List<String> Returner = new ArrayList<String>();
-        
+    public String getAI(String input){
+        String Returner = "";
         return Returner;
     }
 }

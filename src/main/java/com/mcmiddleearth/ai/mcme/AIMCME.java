@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package co.mcme.ai.mcme;
+package com.mcmiddleearth.ai.mcme;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
