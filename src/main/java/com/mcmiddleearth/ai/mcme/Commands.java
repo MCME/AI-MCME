@@ -72,7 +72,10 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                 return true;
             }
             for(Integer i : ids){
-                if(!DBmanager.Quests.get(i).inBounds(player) || DBmanager.Quests.get(i).MatchKeys(argz)){
+                if (DBmanager.Quests.get(i).inBounds(player) ||
+                    DBmanager.Quests.get(i).MatchKeys(argz) || 
+                    DBmanager.Quests.get(i).isUnlocked(player) || 
+                    DBmanager.Quests.get(i).hasCurr(player)){
                     ids.remove(i);
                 }
             }

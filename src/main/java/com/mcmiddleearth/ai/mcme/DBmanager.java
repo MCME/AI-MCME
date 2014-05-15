@@ -101,6 +101,15 @@ public class DBmanager {
                 sort(Boundsx);
                 sort(Boundsz);
                 String npc = s.nextLine();
+                String ai = s.nextLine();
+                String opened = s.nextLine();
+                List<String> values2 = Arrays.asList(opened.split(","));
+                List<Integer> values = new ArrayList<Integer>();
+                for(String v : values2){
+                    values.add(Integer.valueOf(v));
+                }
+                String hold = s.nextLine();
+                int curr = Integer.valueOf(hold);
                 List<String> Keys = new ArrayList<String>();
                 String line;
                 while (s.hasNext()){
@@ -108,7 +117,7 @@ public class DBmanager {
                     Keys.add(line);
                     QuestKeys.put(line, loaded);
                 }
-                Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz);
+                Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz,ai,values,curr);
                 Quests.put(loaded, q);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);

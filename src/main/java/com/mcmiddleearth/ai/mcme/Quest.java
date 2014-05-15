@@ -19,21 +19,27 @@ import org.bukkit.entity.Player;
 public class Quest{
     private int Boundsx[] = new int[2];
     private int Boundsz[] = new int[2];
+    private int needCurr;
     
     private List<String> Keys = new ArrayList<String>();
+    private List<Integer> requiredQuest = new ArrayList<Integer>();
     
     private String npc;
+    private String ai;
     
-    public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[]){
+    public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr){
         this.Boundsx = Boundsx;
         this.Boundsz = Boundsz;
         this.Keys = Keys;
         this.npc = npc;
+        this.ai = ai;
+        this.requiredQuest = opened;
+        this.needCurr = curr;
     }
     public String getAI(String input, boolean isFirst){
         String Returner = "";
         input = input.toLowerCase();
-        switch(npc){
+        switch(ai){
             case "TB1":
                 if(input.contains("star") && input.contains("dunedain")){
                     return "I think there is a star in Bag End...Somewhere";
@@ -53,6 +59,20 @@ public class Quest{
             }
         }
         return returner;
+    }
+    public boolean isUnlocked(Player player){
+        if(DBmanager.currQuests.get(player).getcompleted().containsAll(requiredQuest) || (DBmanager.currQuests.get(player).getcompleted().contains("-1") && DBmanager.currQuests.get(player).getcompleted().contains("-2"))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public boolean hasCurr(Player player){
+        if(DBmanager.currQuests.get(player).getCurrent() == this.needCurr || this.needCurr == -1){
+            return true;
+        }else{
+            return false;
+        }
     }
     public String getNPC(){
         return npc;
