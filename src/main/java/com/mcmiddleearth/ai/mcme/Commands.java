@@ -42,7 +42,6 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         conversationFactory = new ConversationFactory(AIMCME.getPlugin())
                 .withModality(true)
                 .withEscapeSequence("goodbye")
-                .withPrefix(new prefixer())
                 .withFirstPrompt(new speaking())
                 .withTimeout(60)
                 .thatExcludesNonPlayersWithMessage("You must be a player to send this command");
@@ -62,31 +61,32 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                     if(DBmanager.QuestKeys.containsKey(arg)){
                         if(!ids.contains(DBmanager.QuestKeys.get(arg))){
                             ids.add(DBmanager.QuestKeys.get(arg));
-                            player.sendMessage(String.valueOf(DBmanager.QuestKeys.get(arg)));
+                            //player.sendMessage(String.valueOf(DBmanager.QuestKeys.get(arg)));
                         }
                     }
                 }
-                if(ids.size()==1){
-                    player.sendMessage("enter1" + ids);
-                    currQuest = DBmanager.Quests.get(ids.get(0));
-                    conversationFactory.buildConversation((Conversable) sender).begin();
-                    return true;
-                }
-                if(ids.isEmpty()){
-                    player.sendMessage(ChatColor.GRAY + "There is no reply...");
-                    return true;
-                }
+//                if(ids.size()==1){
+//                    player.sendMessage("enter1" + ids);
+//                    currQuest = DBmanager.Quests.get(ids.get(0));
+//                    conversationFactory.buildConversation((Conversable) sender).begin();
+//                    return true;
+//                }
+//                if(ids.isEmpty()){
+//                    player.sendMessage(ChatColor.GRAY + "There is no reply...");
+//                    return true;
+//                }
+                ArrayList<Integer> ids2 = new ArrayList<Integer>(); //I know this horrible coding
                 for(Integer i : ids){
-                    if (DBmanager.Quests.get(i).inBounds(player) ||
-                        DBmanager.Quests.get(i).MatchKeys(argz) || 
-                        DBmanager.Quests.get(i).isUnlocked(player) || 
-                        DBmanager.Quests.get(i).hasCurr(player)/* || 
+                    if (DBmanager.Quests.get(i).inBounds(player) &&
+                        DBmanager.Quests.get(i).MatchKeys(argz) /*&& 
+                        /*DBmanager.Quests.get(i).isUnlocked(player) &&
+                        DBmanager.Quests.get(i).hasCurr(player) && 
                        !DBmanager.Quests.get(i).hasDone(player)*/){
-                        ids.remove(i);
+                        ids2.add(i);
                     }
                 }
-                if(ids.size()==1){
-                    currQuest = DBmanager.Quests.get(ids.get(0));
+                if(ids2.size()==1){
+                    currQuest = DBmanager.Quests.get(ids2.get(0));
                     conversationFactory.buildConversation((Conversable) sender).begin();
                     return true;
                 }else if(ids.isEmpty()){
@@ -115,7 +115,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPrefix(ConversationContext context) {
             String prefix = ChatColor.AQUA + "";
-            prefix = prefix + currQuest.getNPC() + ":";
+            prefix = prefix + currQuest.getNPC() + ": ";
             return prefix;
         }
 
@@ -134,6 +134,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
+            context.setSessionData("talker", "");
             context.setSessionData("NpcTalk", currQuest.getAI(input, false));
             return new speaking();
         }

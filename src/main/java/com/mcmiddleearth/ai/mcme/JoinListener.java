@@ -12,7 +12,9 @@ import static org.bukkit.Bukkit.getLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
@@ -30,5 +32,21 @@ public class JoinListener implements Listener{
             saveclass(player);
         }
         DBmanager.loadclass(player);
+    }
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        DBmanager.currQuests.remove(player.getName());
+    }
+    @EventHandler
+    public void PlayerCommandPreprocess(PlayerCommandPreprocessEvent event){
+        if(event.getMessage().equalsIgnoreCase("warp")){
+            Player player = event.getPlayer();
+            Questdat pq = DBmanager.currQuests.get(player.getName());
+            Quest q = DBmanager.Quests.get(pq.getCurrent());
+            if(q.isWalking(player)){
+                event.setCancelled(true);
+            }
+        }
     }
 }

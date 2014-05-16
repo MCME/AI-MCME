@@ -8,6 +8,7 @@ package com.mcmiddleearth.ai.mcme;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -28,6 +29,8 @@ public class Quest{
     private String npc;
     private String ai;
     
+    private boolean walking;
+    
     public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr){
         this.id = id;
         this.Boundsx = Boundsx;
@@ -37,21 +40,29 @@ public class Quest{
         this.ai = ai;
         this.requiredQuest = opened;
         this.needCurr = curr;
+        this.walking = false;
     }
     public String getAI(String input, boolean isFirst){
+        String prefix = ChatColor.AQUA + "";
+        prefix = prefix + npc + ": " + ChatColor.GRAY;
         String Returner = "";
         input = input.toLowerCase();
         switch(ai){
             case "TB1":
                 if(input.contains("star") && input.contains("dunedain")){
                     return "I think there is a star in Bag End...Somewhere";
+                }else if(isFirst){
+                    return prefix + "Goodmorning";
                 }else{
-                    return "I don't understand...";
+                    return prefix + "I don't understand...";
                 }
             case "TB2":
                 
         }
         return Returner;
+    }
+    public boolean isWalking(Player player){
+        return this.walking;
     }
     public boolean MatchKeys(List<String> keys){
         boolean returner = true;
