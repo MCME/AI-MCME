@@ -1,5 +1,5 @@
 name: AIMCME
-main: co.mcme.ai.mcme.AIMCME
+main: com.mcmiddleearth.ai.mcme.AIMCME
 version: ${project.version}
 website: ${project.url}
 authors: [DonoA]

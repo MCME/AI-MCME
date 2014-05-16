@@ -22,7 +22,13 @@ public class Questdat {
         this.player = player;
         this.completed = completed;
         this.current = current;
-        DBmanager.currQuests.put(player, this);
+    }
+    public Questdat(Player player){
+        this.player = player;
+        List<Integer> comp = new ArrayList<Integer>();
+        comp.add(-1);
+        this.completed = comp;
+        this.current = -1;
     }
     public List<Integer> getcompleted(){
         return completed;
@@ -31,6 +37,6 @@ public class Questdat {
         return current;
     }
     public void stopQuest(){
-        DBmanager.currQuests.remove(player);
+        DBmanager.currQuests.remove(player.getName());
     }
 }

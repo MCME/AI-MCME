@@ -8,6 +8,7 @@ package com.mcmiddleearth.ai.mcme;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -28,26 +29,29 @@ public class DBmanager {
     
     public static final TreeMap<Integer, Quest> Quests = new TreeMap();
     
-    public static final TreeMap<Player, Questdat> currQuests = new TreeMap();
+    public static final TreeMap<String, Questdat> currQuests = new TreeMap();
     
-    private File questDB = new File(AIMCME.getPlugin().getDataFolder() + System.getProperty("file.separator") + "Quests");
+    private static File questDB = new File(AIMCME.getPlugin().getDataFolder() + System.getProperty("file.separator") + "Quests");
     
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
-    public void saveclass(Player player){
+    public static void saveclass(Player player){
         firstLoad();
         boolean successful = true;
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() + ".questdat");
         try {
-            PrintWriter writer = new PrintWriter(start, "UTF-8");
+            FileWriter write = new FileWriter(start.toString(), true);
+            PrintWriter writer = new PrintWriter(write);
             String completed = "";
-            for(Integer id : currQuests.get(player).getcompleted()){
+            for(Integer id : currQuests.get(player.getName()).getcompleted()){
                 completed += id.toString() + " , ";
             }
             completed = completed.substring(0, completed.length()-3);
             writer.println(completed);
-            writer.println(currQuests.get(player).getCurrent());
+            player.sendMessage(completed);
+            writer.println(currQuests.get(player.getName()).getCurrent());
+            player.sendMessage(String.valueOf(currQuests.get(player.getName()).getCurrent()));
         } catch (IOException ex) {
             Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
             successful = false;
@@ -60,10 +64,11 @@ public class DBmanager {
             }
         }
     }
-    public void loadclass(Player player){
+    public static void loadclass(Player player){
         firstLoad();
         File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
         if (save.exists()) {
+            player.sendMessage("enter1");
             try {
                 Scanner s;
                 s = new Scanner(save);
@@ -76,7 +81,7 @@ public class DBmanager {
                 String l = s.nextLine();
                 int currid = Integer.valueOf(l);
                 Questdat currquest = new Questdat(player, ids, currid);
-                currQuests.put(player, currquest);
+                currQuests.put(player.getName(), currquest);
             } catch (IOException ex) {
                 Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -85,7 +90,6 @@ public class DBmanager {
     public static int loadQuests(){
         firstLoad();
         int loaded = 0;
-        File questDB = new File(AIMCME.getPlugin().getDataFolder() + System.getProperty("file.separator") + "Quests");
         File QuestDB = new File(questDB + System.getProperty("file.separator") + "QuestDB");
         File questSave = new File(QuestDB, + loaded +  ".quest");
         while(questSave.exists()){
@@ -129,7 +133,6 @@ public class DBmanager {
         return loaded;
     }
     public static void firstLoad(){
-        File questDB = new File(AIMCME.getPlugin().getDataFolder() + System.getProperty("file.separator") + "Quests");
         if(!questDB.exists()) {
             questDB.mkdirs();
         }

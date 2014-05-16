@@ -50,51 +50,56 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        if (sender instanceof Player) {
-            player = (Player) sender;
-            if(args.length == 0){
+        if(cmd.getName().equalsIgnoreCase("say")){
+            if (sender instanceof Player) {
+                player = (Player) sender;
+                if(args.length == 0){
+                   return false;
+                }
+                ArrayList<String> argz = new ArrayList(Arrays.asList(args));
+                ArrayList<Integer> ids = new ArrayList<Integer>();
+                for(String arg : argz){
+                    if(!ids.contains(DBmanager.QuestKeys.get(arg))){
+                        ids.add(DBmanager.QuestKeys.get(arg));
+                    }
+                }
+                if(ids.size()==1){
+                    currQuest = DBmanager.Quests.get(ids);
+                    conversationFactory.buildConversation((Conversable) sender).begin();
+                    return true;
+                }
+                if(ids.isEmpty()){
+                    player.sendMessage(ChatColor.GRAY + "There is no reply...");
+                    return true;
+                }
+                for(Integer i : ids){
+                    if (DBmanager.Quests.get(i).inBounds(player) ||
+                        DBmanager.Quests.get(i).MatchKeys(argz) || 
+                        DBmanager.Quests.get(i).isUnlocked(player) || 
+                        DBmanager.Quests.get(i).hasCurr(player) || 
+                       !DBmanager.Quests.get(i).hasDone(player)){
+                        ids.remove(i);
+                    }
+                }
+                if(ids.size()==1){
+                    player.sendMessage("enter2" + ids.get(0));
+                    currQuest = DBmanager.Quests.get(ids.get(0));
+                    conversationFactory.buildConversation((Conversable) sender).begin();
+                    return true;
+                }else if(ids.isEmpty()){
+                    player.sendMessage(ChatColor.GRAY + "There is no reply...");
+                    return true;
+                }else{
+                    player.sendMessage("Thats and error, please report it =)");
+                    player.sendMessage("http://www.mcmiddleearth.com/conversations/add?to=dallen1393");
+                    return false;
+                }
+            } else {
+               sender.sendMessage("You must be a player!");
                return false;
             }
-            List<String> argz = new ArrayList(Arrays.asList(args));
-            List<Integer> ids = new ArrayList<Integer>();
-            for(String arg : argz){
-                if(!ids.contains(DBmanager.QuestKeys.get(arg))){
-                    ids.add(DBmanager.QuestKeys.get(arg));
-                }
-            }
-            if(ids.size()==1){
-                currQuest = DBmanager.Quests.get(ids);
-                conversationFactory.buildConversation((Conversable) sender).begin();
-                return true;
-            }
-            if(ids.isEmpty()){
-                player.sendMessage(ChatColor.GRAY + "There is no reply...");
-                return true;
-            }
-            for(Integer i : ids){
-                if (DBmanager.Quests.get(i).inBounds(player) ||
-                    DBmanager.Quests.get(i).MatchKeys(argz) || 
-                    DBmanager.Quests.get(i).isUnlocked(player) || 
-                    DBmanager.Quests.get(i).hasCurr(player)){
-                    ids.remove(i);
-                }
-            }
-            if(ids.size()==1){
-                currQuest = DBmanager.Quests.get(ids);
-                conversationFactory.buildConversation((Conversable) sender).begin();
-                return true;
-            }else if(ids.isEmpty()){
-                player.sendMessage(ChatColor.GRAY + "There is no reply...");
-                return true;
-            }else{
-                player.sendMessage("Thats and error, please report it =)");
-                player.sendMessage("http://www.mcmiddleearth.com/conversations/add?to=dallen1393");
-                return false;
-            }
-        } else {
-           sender.sendMessage("You must be a player!");
-           return false;
         }
+        return false;
     }
 
     @Override

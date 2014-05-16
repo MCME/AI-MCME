@@ -20,6 +20,7 @@ public class Quest{
     private int Boundsx[] = new int[2];
     private int Boundsz[] = new int[2];
     private int needCurr;
+    private int id;
     
     private List<String> Keys = new ArrayList<String>();
     private List<Integer> requiredQuest = new ArrayList<Integer>();
@@ -28,6 +29,7 @@ public class Quest{
     private String ai;
     
     public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr){
+        this.id = id;
         this.Boundsx = Boundsx;
         this.Boundsz = Boundsz;
         this.Keys = Keys;
@@ -61,14 +63,21 @@ public class Quest{
         return returner;
     }
     public boolean isUnlocked(Player player){
-        if(DBmanager.currQuests.get(player).getcompleted().containsAll(requiredQuest) || (DBmanager.currQuests.get(player).getcompleted().contains("-1") && DBmanager.currQuests.get(player).getcompleted().contains("-2"))){
+        if(DBmanager.currQuests.get(player.getName()).getcompleted().containsAll(requiredQuest) || (DBmanager.currQuests.get(player.getName()).getcompleted().contains("-1") && DBmanager.currQuests.get(player.getName()).getcompleted().contains("-2"))){
             return true;
         }else{
             return false;
         }
     }
     public boolean hasCurr(Player player){
-        if(DBmanager.currQuests.get(player).getCurrent() == this.needCurr || this.needCurr == -1){
+        if(DBmanager.currQuests.get(player.getName()).getCurrent() == this.needCurr || this.needCurr == -1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public boolean hasDone(Player player){
+        if(DBmanager.currQuests.get(player.getName()).getcompleted().contains(id)){
             return true;
         }else{
             return false;
