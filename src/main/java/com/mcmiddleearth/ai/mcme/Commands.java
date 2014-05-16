@@ -101,6 +101,9 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                sender.sendMessage("You must be a player!");
                return false;
             }
+        } else if(cmd.getName().equalsIgnoreCase("endquest")){
+            Questdat hold = DBmanager.currQuests.get(player.getName());
+            hold.stopQuest();
         }
         return false;
     }

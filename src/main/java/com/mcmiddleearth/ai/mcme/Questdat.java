@@ -37,6 +37,7 @@ public class Questdat {
         return current;
     }
     public void stopQuest(){
-        DBmanager.currQuests.remove(player.getName());
+        this.current = -1;
+        DBmanager.saveclass(player);
     }
 }

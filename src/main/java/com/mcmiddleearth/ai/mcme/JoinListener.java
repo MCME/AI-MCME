@@ -46,6 +46,8 @@ public class JoinListener implements Listener{
             Quest q = DBmanager.Quests.get(pq.getCurrent());
             if(q.isWalking(player)){
                 event.setCancelled(true);
+                player.sendMessage("You are on a walking quest!");
+                player.sendMessage("/endquest to leave current quest");
             }
         }
     }

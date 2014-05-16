@@ -22,6 +22,7 @@ public class AIMCME extends JavaPlugin {
     public void onEnable(){
         pluginInstance = this;
         getCommand("say").setExecutor(new Commands());
+        getCommand("endquest").setExecutor(new Commands());
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new JoinListener(), this);
         int Loaded = DBmanager.loadQuests();
