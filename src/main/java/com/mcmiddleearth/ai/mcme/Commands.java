@@ -59,12 +59,16 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                 ArrayList<String> argz = new ArrayList(Arrays.asList(args));
                 ArrayList<Integer> ids = new ArrayList<Integer>();
                 for(String arg : argz){
-                    if(!ids.contains(DBmanager.QuestKeys.get(arg))){
-                        ids.add(DBmanager.QuestKeys.get(arg));
+                    if(DBmanager.QuestKeys.containsKey(arg)){
+                        if(!ids.contains(DBmanager.QuestKeys.get(arg))){
+                            ids.add(DBmanager.QuestKeys.get(arg));
+                            player.sendMessage(String.valueOf(DBmanager.QuestKeys.get(arg)));
+                        }
                     }
                 }
                 if(ids.size()==1){
-                    currQuest = DBmanager.Quests.get(ids);
+                    player.sendMessage("enter1" + ids);
+                    currQuest = DBmanager.Quests.get(ids.get(0));
                     conversationFactory.buildConversation((Conversable) sender).begin();
                     return true;
                 }
@@ -76,13 +80,12 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                     if (DBmanager.Quests.get(i).inBounds(player) ||
                         DBmanager.Quests.get(i).MatchKeys(argz) || 
                         DBmanager.Quests.get(i).isUnlocked(player) || 
-                        DBmanager.Quests.get(i).hasCurr(player) || 
-                       !DBmanager.Quests.get(i).hasDone(player)){
+                        DBmanager.Quests.get(i).hasCurr(player)/* || 
+                       !DBmanager.Quests.get(i).hasDone(player)*/){
                         ids.remove(i);
                     }
                 }
                 if(ids.size()==1){
-                    player.sendMessage("enter2" + ids.get(0));
                     currQuest = DBmanager.Quests.get(ids.get(0));
                     conversationFactory.buildConversation((Conversable) sender).begin();
                     return true;

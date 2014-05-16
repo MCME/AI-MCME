@@ -41,8 +41,7 @@ public class DBmanager {
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() + ".questdat");
         try {
-            FileWriter write = new FileWriter(start.toString(), true);
-            PrintWriter writer = new PrintWriter(write);
+            PrintWriter writer = new PrintWriter(new FileWriter(start.toString()));
             String completed = "";
             for(Integer id : currQuests.get(player.getName()).getcompleted()){
                 completed += id.toString() + " , ";
@@ -52,6 +51,7 @@ public class DBmanager {
             player.sendMessage(completed);
             writer.println(currQuests.get(player.getName()).getCurrent());
             player.sendMessage(String.valueOf(currQuests.get(player.getName()).getCurrent()));
+            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
             successful = false;
