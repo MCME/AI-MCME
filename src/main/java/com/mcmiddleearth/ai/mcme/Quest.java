@@ -42,7 +42,7 @@ public class Quest{
         this.needCurr = curr;
         this.walking = false;
     }
-    public String getAI(String input, boolean isFirst){
+    public String getAI(String input, boolean isFirst, Player player){
         String prefix = ChatColor.AQUA + "";
         prefix = prefix + npc + ": " + ChatColor.GRAY;
         String Returner = "";
