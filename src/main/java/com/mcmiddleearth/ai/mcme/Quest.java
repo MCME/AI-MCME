@@ -56,13 +56,17 @@ public class Quest{
                 }else{
                     return prefix + "I don't understand...";
                 }
-            case "TB2":
-                
+            case "Bb1":
+                DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+                return "Thank goodness your here. I need you to go order a cake for me from _ _";                
         }
         return Returner;
     }
     public boolean isWalking(Player player){
         return this.walking;
+    }
+    public Integer getId(){
+        return this.id;
     }
     public boolean MatchKeys(List<String> keys){
         boolean returner = true;

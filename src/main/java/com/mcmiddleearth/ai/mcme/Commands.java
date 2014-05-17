@@ -40,8 +40,8 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     
     public Commands() {
         conversationFactory = new ConversationFactory(AIMCME.getPlugin())
+                .withLocalEcho(false)
                 .withModality(true)
-                .withEscapeSequence("goodbye")
                 .withFirstPrompt(new speaking())
                 .withTimeout(60)
                 .thatExcludesNonPlayersWithMessage("You must be a player to send this command");
@@ -137,8 +137,10 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
-            context.setSessionData("talker", "");
             context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
+            if(DBmanager.currQuests.get(player.getName()).getcompleted().contains(currQuest.getId())){
+                return Prompt.END_OF_CONVERSATION;
+            }
             return new speaking();
         }
     }
