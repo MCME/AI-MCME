@@ -128,7 +128,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPromptText(ConversationContext context) {
             if (context.getSessionData("PlayerTalk") == null) {
-                context.setSessionData("NpcTalk", currQuest.getAI("", true));
+                context.setSessionData("NpcTalk", currQuest.getAI("", true, player));
             }else{
                 return context.getSessionData("NpcTalk").toString();
             }
@@ -138,7 +138,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
             context.setSessionData("talker", "");
-            context.setSessionData("NpcTalk", currQuest.getAI(input, false));
+            context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
             return new speaking();
         }
     }
