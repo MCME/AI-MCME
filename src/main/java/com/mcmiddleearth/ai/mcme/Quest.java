@@ -54,15 +54,21 @@ public class Quest{
                 }else if(isFirst){
                     return prefix + "Goodmorning";
                 }else{
-                    return prefix + "I don't understand...";
+                    Returner = getBaseAI(input, player);
+                    if(Returner == "-1"){
+                        return prefix + "I don't understand...";
+                    }
+                    return prefix + Returner;
                 }
             case "Bb1":
                 DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
                 return "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";
-            case "Bb":
                 
         }
         return Returner;
+    }
+    public String getBaseAI(String input, Player player){
+        return "";
     }
     public boolean isWalking(Player player){
         return this.walking;
