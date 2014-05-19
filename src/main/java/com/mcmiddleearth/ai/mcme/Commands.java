@@ -78,10 +78,8 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                 ArrayList<Integer> ids2 = new ArrayList<Integer>(); //I know this horrible coding
                 for(Integer i : ids){
                     if (DBmanager.Quests.get(i).inBounds(player) &&
-                        DBmanager.Quests.get(i).MatchKeys(argz) /*&& 
-                        /*DBmanager.Quests.get(i).isUnlocked(player) &&
-                        DBmanager.Quests.get(i).hasCurr(player) && 
-                       !DBmanager.Quests.get(i).hasDone(player)*/){
+                        DBmanager.Quests.get(i).MatchKeys(argz) && 
+                        DBmanager.Quests.get(i).isUnlocked(player)){
                         ids2.add(i);
                     }
                 }

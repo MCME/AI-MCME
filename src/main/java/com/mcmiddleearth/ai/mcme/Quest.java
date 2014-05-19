@@ -58,7 +58,9 @@ public class Quest{
                 }
             case "Bb1":
                 DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                return "Thank goodness your here. I need you to go order a cake for me from _ _";                
+                return "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";
+            case "Bb":
+                
         }
         return Returner;
     }
@@ -78,7 +80,7 @@ public class Quest{
         return returner;
     }
     public boolean isUnlocked(Player player){
-        if(DBmanager.currQuests.get(player.getName()).getcompleted().containsAll(requiredQuest) || (DBmanager.currQuests.get(player.getName()).getcompleted().contains("-1") && DBmanager.currQuests.get(player.getName()).getcompleted().contains("-2"))){
+        if(DBmanager.currQuests.get(player.getName()).getcompleted().containsAll(requiredQuest) || (DBmanager.currQuests.get(player.getName()).getcompleted().contains(-1) && DBmanager.currQuests.get(player.getName()).getcompleted().contains(-2))){
             return true;
         }else{
             return false;
