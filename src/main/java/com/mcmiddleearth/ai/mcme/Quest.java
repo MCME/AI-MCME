@@ -54,7 +54,7 @@ public class Quest{
                 }else if(isFirst){
                     return prefix + "Goodmorning";
                 }else{
-                    Returner = getBaseAI(input, player);
+                    Returner = getBaseAI(input, "TB", player);
                     if(Returner == "-1"){
                         return prefix + "I don't understand...";
                     }
@@ -67,7 +67,17 @@ public class Quest{
         }
         return Returner;
     }
-    public String getBaseAI(String input, Player player){
+    public String getBaseAI(String input, String baseAI, Player player){
+        switch(baseAI){
+            case "TB":
+                
+            case "Bb":
+            
+            case "E":
+                
+            case "G":
+                
+        }
         return "";
     }
     public boolean isWalking(Player player){
