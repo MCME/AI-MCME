@@ -130,7 +130,7 @@ public class DBmanager {
             loaded++;
             questSave = new File(QuestDB, + loaded +  ".quest");
         }
-        return loaded;
+        return loaded-1;
     }
     public static void firstLoad(){
         if(!questDB.exists()) {
