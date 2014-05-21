@@ -1,7 +1,7 @@
 AI-MCME
 =======
 
-allows you to talk to trees!
+Allows a simple quest-line and some semi-conplex AI to work in MCME
 
 allows the use of /say to start conversations with NPCs.
 
