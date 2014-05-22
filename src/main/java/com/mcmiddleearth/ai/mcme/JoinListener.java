@@ -25,17 +25,18 @@ public class JoinListener implements Listener{
     @EventHandler
     public void onLogin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        getLogger().info(player.getName());
         if(!event.getPlayer().hasPlayedBefore()) {
             Questdat hold = new Questdat(player);
             DBmanager.currQuests.put(player.getName(), hold);
             saveclass(player);
+            getLogger().info("new load");
         }
         DBmanager.loadclass(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        saveclass(player);
         DBmanager.currQuests.remove(player.getName());
     }
     @EventHandler

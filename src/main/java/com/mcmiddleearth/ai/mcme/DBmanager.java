@@ -19,6 +19,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.bukkit.Bukkit.getLogger;
 import org.bukkit.entity.Player;
 
 /**
@@ -38,8 +39,8 @@ public class DBmanager {
     public static void saveclass(Player player){
         firstLoad();
         boolean successful = true;
-        File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
-        File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() + ".questdat");
+        File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
+        File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(start.toString()));
             String completed = "";
@@ -48,9 +49,7 @@ public class DBmanager {
             }
             completed = completed.substring(0, completed.length()-3);
             writer.println(completed);
-            player.sendMessage(completed);
             writer.println(currQuests.get(player.getName()).getCurrent());
-            player.sendMessage(String.valueOf(currQuests.get(player.getName()).getCurrent()));
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,9 +65,8 @@ public class DBmanager {
     }
     public static void loadclass(Player player){
         firstLoad();
-        File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat", player.getUniqueId().toString() +  ".questdat.new");
+        File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat");
         if (save.exists()) {
-            player.sendMessage("enter1");
             try {
                 Scanner s;
                 s = new Scanner(save);

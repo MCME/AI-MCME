@@ -47,7 +47,6 @@ public class Quest{
         prefix = prefix + npc + ": " + ChatColor.GRAY;
         String Returner = "";
         input = input.toLowerCase();
-        player.sendMessage(ai);
         switch(ai){
             case "TB1":
                 if(input.contains("star") && input.contains("dunedain")){
@@ -92,7 +91,6 @@ public class Quest{
     }
     public boolean isUnlocked(Player player){
         Questdat q = DBmanager.currQuests.get(player.getName());
-        player.sendMessage(String.valueOf(q.getcompleted()));
         return q.getcompleted().containsAll(requiredQuest);
     }
     public boolean hasCurr(Player player){
