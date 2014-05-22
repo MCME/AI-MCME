@@ -19,6 +19,10 @@ There following AI may also be implemented at a later date:
 - Cirdan the Shipwright, in the Grey Havens after they are built that is (95%)
 - Saruman, in his throne room (--%)
 - Theoden, in his palace (80%)
+- Samwise, unset location (95%)
+- Thranduil, in Mirkwood somewhere (80%)
+- Denethor, Gondor after finished (90%)
+- Gothmog, in Mordor after finished (75%)
 
 The percentages are how likely you are to find them there. If they are not there at the time, the server will reply, `They are not home`. If you do not catch them at home you must wait one minute before the chance will be recalculated. 
 
