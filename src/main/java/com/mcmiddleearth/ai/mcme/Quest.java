@@ -67,7 +67,7 @@ public class Quest{
         }
         return Returner;
     }
-    public String getBaseAI(String input, String baseAI, Player player){
+    private String getBaseAI(String input, String baseAI, Player player){
         switch(baseAI){
             case "TB":
                 
