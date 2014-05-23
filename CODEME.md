@@ -11,7 +11,7 @@ This is the documentation outlining the classes and major functions used in MCME
 	- `getNPC` | returns npc name
 	- `inBounds(player)` | checks if the player is within the quest bound
 
--`Questdat`
+- `Questdat`
   - `getcompleted` | returns list of completed ids
   - `getCurrent` | returns current quest id
   - `stopQuest` | stops the current quest and saves the class
