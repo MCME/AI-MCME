@@ -116,9 +116,9 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
             context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
-//            if(DBmanager.currQuests.get(player.getName()).getcompleted().contains(currQuest.getId())){
-//                return Prompt.END_OF_CONVERSATION;
-//            }
+            if(context.getSessionData("NpcTalk").equals("farewell")){
+                return Prompt.END_OF_CONVERSATION;
+            }
             return new speaking();
         }
     }

@@ -61,8 +61,13 @@ public class Quest{
                     return prefix + Returner;
                 }
             case "BB1":
-                DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                return "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";
+                if(isFirst){
+                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+                    return "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";                   
+                }else{
+                    return "Farewell!";
+                }
+                
                 
         }
         return Returner;
