@@ -67,6 +67,10 @@ public class Quest{
                 }else{
                     return "Farewell!";
                 }
+            case "BB2":
+                if(isFirst){
+                    return "Now that we have a cake the party can go on";
+                }
                 
                 
         }
