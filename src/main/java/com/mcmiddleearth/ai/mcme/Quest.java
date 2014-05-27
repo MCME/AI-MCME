@@ -71,7 +71,11 @@ public class Quest{
                 if(isFirst){
                     return "Now that we have a cake the party can go on";
                 }
+            case "E1":
                 
+            case "E2":
+                
+            case "E3":
                 
         }
         return Returner;
