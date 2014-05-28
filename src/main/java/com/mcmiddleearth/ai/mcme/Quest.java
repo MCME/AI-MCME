@@ -70,6 +70,8 @@ public class Quest{
             case "BB2":
                 if(isFirst){
                     return "Now that we have a cake the party can go on";
+                }else{
+                    return getBaseAI(input, "Bb", player);
                 }
             case "E1":
                 
@@ -77,6 +79,9 @@ public class Quest{
                 
             case "E3":
                 
+            case "IK1":
+                
+            case "N1":
         }
         return Returner;
     }
