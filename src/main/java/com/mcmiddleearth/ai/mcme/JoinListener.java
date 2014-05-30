@@ -6,7 +6,6 @@
 
 package com.mcmiddleearth.ai.mcme;
 
-import static com.mcmiddleearth.ai.mcme.DBmanager.loadclass;
 import static com.mcmiddleearth.ai.mcme.DBmanager.saveclass;
 import static org.bukkit.Bukkit.getLogger;
 import org.bukkit.entity.Player;
@@ -25,7 +24,7 @@ public class JoinListener implements Listener{
     @EventHandler
     public void onLogin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        if(!event.getPlayer().hasPlayedBefore()) {
+        if(!DBmanager.hasSave(player)) {
             Questdat hold = new Questdat(player);
             DBmanager.currQuests.put(player.getName(), hold);
             saveclass(player);

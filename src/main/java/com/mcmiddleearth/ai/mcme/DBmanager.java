@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static java.util.Arrays.sort;
@@ -42,7 +43,8 @@ public class DBmanager {
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter(start.toString()));
+            FileWriter fr = new FileWriter(start.toString());
+            PrintWriter writer = new PrintWriter(fr);
             String completed = "";
             for(Integer id : currQuests.get(player.getName()).getcompleted()){
                 completed += id.toString() + " , ";
@@ -51,16 +53,17 @@ public class DBmanager {
             writer.println(completed);
             writer.println(currQuests.get(player.getName()).getCurrent());
             writer.close();
+            writer = null;
+            System.gc();
         } catch (IOException ex) {
             Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
             successful = false;
-        } finally {
-            if (successful) {
-                if (finished.exists()) {
-                    finished.delete();
-                }
-                start.renameTo(finished);
+        }
+        if (successful) {
+            if(finished.exists()){
+                AIMCME.getPlugin().getLogger().info(String.valueOf(finished.delete()));
             }
+            AIMCME.getPlugin().getLogger().info(String.valueOf(start.renameTo(finished)));
         }
     }
     public static void loadclass(Player player){
@@ -142,5 +145,10 @@ public class DBmanager {
         if(!save.exists()){
             save.mkdir();
         }
+    }
+    public static boolean hasSave(Player player){
+        String uuid = player.getUniqueId().toString();
+        File loc = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + uuid + ".questdat");
+        return loc.exists();
     }
 }
