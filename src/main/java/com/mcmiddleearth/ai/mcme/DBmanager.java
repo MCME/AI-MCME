@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static java.util.Arrays.sort;
@@ -44,16 +43,15 @@ public class DBmanager {
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
         try {
             FileWriter fr = new FileWriter(start.toString());
-            PrintWriter writer = new PrintWriter(fr);
-            String completed = "";
-            for(Integer id : currQuests.get(player.getName()).getcompleted()){
-                completed += id.toString() + " , ";
+            try (PrintWriter writer = new PrintWriter(fr)) {
+                String completed = "";
+                for(Integer id : currQuests.get(player.getName()).getcompleted()){
+                    completed += id.toString() + " , ";
+                }
+                completed = completed.substring(0, completed.length()-3);
+                writer.println(completed);
+                writer.println(currQuests.get(player.getName()).getCurrent());
             }
-            completed = completed.substring(0, completed.length()-3);
-            writer.println(completed);
-            writer.println(currQuests.get(player.getName()).getCurrent());
-            writer.close();
-            writer = null;
             System.gc();
         } catch (IOException ex) {
             Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,6 +105,8 @@ public class DBmanager {
                 sort(Boundsz);
                 String npc = s.nextLine();
                 String ai = s.nextLine();
+                String SCanTwice = s.nextLine();
+                boolean canTwice = Boolean.valueOf(SCanTwice);
                 String opened = s.nextLine();
                 List<String> values2 = Arrays.asList(opened.split(","));
                 List<Integer> values = new ArrayList<Integer>();
@@ -122,7 +122,7 @@ public class DBmanager {
                     Keys.add(line);
                     QuestKeys.put(line, loaded);
                 }
-                Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz,ai,values,curr);
+                Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz,ai,values,curr,canTwice);
                 Quests.put(loaded, q);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(DBmanager.class.getName()).log(Level.SEVERE, null, ex);

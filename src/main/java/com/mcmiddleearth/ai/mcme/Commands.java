@@ -56,9 +56,9 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                    return false;
                 }
                 ArrayList<String> argz = new ArrayList(Arrays.asList(args));
-                ArrayList<Integer> ids2 = new ArrayList<Integer>(); //I know this horrible coding
+                ArrayList<Integer> ids2 = new ArrayList<Integer>();
                 for(Integer i : DBmanager.Quests.keySet()){
-                    if (DBmanager.Quests.get(i).inBounds(player) && DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player)){//&& DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player)
+                    if (DBmanager.Quests.get(i).inBounds(player) && DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player) && DBmanager.Quests.get(i).canTwice(player)){//&& DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player)
                         ids2.add(i);
                         player.sendMessage(String.valueOf(i));
                     }
@@ -116,7 +116,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
             context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
-            if(context.getSessionData("NpcTalk").equals("farewell")){
+            if(context.getSessionData("NpcTalk").equals("Farewell!")){
                 return Prompt.END_OF_CONVERSATION;
             }
             return new speaking();

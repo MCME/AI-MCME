@@ -30,8 +30,9 @@ public class Quest{
     private String ai;
     
     private boolean walking;
+    private boolean canTwice;
     
-    public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr){
+    public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr, boolean canTwice){
         this.id = id;
         this.Boundsx = Boundsx;
         this.Boundsz = Boundsz;
@@ -41,6 +42,7 @@ public class Quest{
         this.requiredQuest = opened;
         this.needCurr = curr;
         this.walking = false;
+        this.canTwice = canTwice;
     }
     public String getAI(String input, boolean isFirst, Player player){
         String prefix = ChatColor.AQUA + "";
@@ -74,14 +76,15 @@ public class Quest{
                     return getBaseAI(input, "Bb", player);
                 }
             case "E1":
-                
+                return "E1";
             case "E2":
-                
+                return "E2";
             case "E3":
-                
+                return "E3";
             case "IK1":
-                
+                return "IK1";
             case "N1":
+                return "N1";
         }
         return Returner;
     }
@@ -110,6 +113,13 @@ public class Quest{
     public boolean isUnlocked(Player player){
         Questdat q = DBmanager.currQuests.get(player.getName());
         return q.getcompleted().containsAll(requiredQuest);
+    }
+    public boolean canTwice(Player player){
+        Questdat qd = DBmanager.currQuests.get(player.getName());
+        if(qd.getcompleted().contains(id) && !canTwice){
+            return false;
+        }
+        return true;
     }
     public boolean hasCurr(Player player){
         if(DBmanager.currQuests.get(player.getName()).getCurrent() == this.needCurr || this.needCurr == -1){
