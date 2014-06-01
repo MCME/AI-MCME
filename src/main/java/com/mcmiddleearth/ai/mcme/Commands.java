@@ -4,11 +4,13 @@
  * and open the template in the editor.
  */
 
-package co.mcme.ai.mcme;
+package com.mcmiddleearth.ai.mcme;
 
 import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,13 +34,14 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     
     private final ConversationFactory conversationFactory;
     
+    private Quest currQuest;
+    
     private Player player;
     
     public Commands() {
         conversationFactory = new ConversationFactory(AIMCME.getPlugin())
+                .withLocalEcho(false)
                 .withModality(true)
-                .withEscapeSequence("goodbye")
-                .withPrefix(new prefixer())
                 .withFirstPrompt(new speaking())
                 .withTimeout(60)
                 .thatExcludesNonPlayersWithMessage("You must be a player to send this command");
@@ -46,26 +49,41 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        if (sender instanceof Player) {
-            player = (Player) sender;
-            if(args.length == 0){
+        if(cmd.getName().equalsIgnoreCase("say")){
+            if (sender instanceof Player) {
+                player = (Player) sender;
+                if(args.length == 0){
+                   return false;
+                }
+                ArrayList<String> argz = new ArrayList(Arrays.asList(args));
+                ArrayList<Integer> ids2 = new ArrayList<Integer>();
+                for(Integer i : DBmanager.Quests.keySet()){
+                    if (DBmanager.Quests.get(i).inBounds(player) && DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player) && DBmanager.Quests.get(i).canTwice(player)){//&& DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player)
+                        ids2.add(i);
+                        player.sendMessage(String.valueOf(i));
+                    }
+                }
+                if(ids2.size()==1){
+                    currQuest = DBmanager.Quests.get(ids2.get(0));
+                    conversationFactory.buildConversation((Conversable) sender).begin();
+                    return true;
+                }else if(ids2.isEmpty()){
+                    player.sendMessage(ChatColor.GRAY + "There is no reply...");
+                    return true;
+                }else{
+                    player.sendMessage("Thats and error, please report it =)");
+                    player.sendMessage("http://www.mcmiddleearth.com/conversations/add?to=dallen1393");
+                    return false;
+                }
+            } else {
+               sender.sendMessage("You must be a player!");
                return false;
             }
-            Polygon area;
-            int zbounds[] = {-217, -167}; //2047 -197
-            int xbounds[] = {2047, 2080};
-            area = new Polygon(xbounds, zbounds, xbounds.length);
-            if(area.getBounds2D().contains(player.getLocation().getX(), player.getLocation().getZ()) && Arrays.toString(args).contains("Teebeard")){
-                if(sender instanceof Conversable){
-                    conversationFactory.buildConversation((Conversable) sender).begin();
-                }
-            }
-           player.sendMessage(ChatColor.GRAY + "There is no reply...");
-        } else {
-           sender.sendMessage("You must be a player!");
-           return false;
+        } else if(cmd.getName().equalsIgnoreCase("endquest")){
+            Questdat hold = DBmanager.currQuests.get(player.getName());
+            hold.stopQuest();
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -78,7 +96,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPrefix(ConversationContext context) {
             String prefix = ChatColor.AQUA + "";
-            prefix += "npc:";
+            prefix = prefix + currQuest.getNPC() + ": ";
             return prefix;
         }
 
@@ -88,21 +106,19 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPromptText(ConversationContext context) {
             if (context.getSessionData("PlayerTalk") == null) {
-                return "Hello " + player.getName();
+                context.setSessionData("NpcTalk", currQuest.getAI("", true, player));
             }else{
                 return context.getSessionData("NpcTalk").toString();
             }
+            return context.getSessionData("NpcTalk").toString();
         }
-
-
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
-            if(input.contains("star")){
-                context.setSessionData("NpcTalk", "I think Bilbo has some stars somewhere...");
-                return new speaking();
+            context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
+            if(context.getSessionData("NpcTalk").equals("Farewell!")){
+                return Prompt.END_OF_CONVERSATION;
             }
-            context.setSessionData("NpcTalk", "I didn't catch that.");
             return new speaking();
         }
     }
