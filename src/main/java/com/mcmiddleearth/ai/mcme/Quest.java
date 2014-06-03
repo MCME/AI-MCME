@@ -56,24 +56,28 @@ public class Quest{
                 }else if(isFirst){
                     return prefix + "Goodmorning";
                 }else{
-                    Returner = getBaseAI(input, "TB", player);
-                    if(Returner.equals("-1")){
-                        return prefix + "I don't understand...";
-                    }
-                    return prefix + Returner;
+                    return getBaseAI(input, "TB", prefix);
                 }
             case "BB1":
                 if(isFirst){
                     DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";                   
+                    return prefix + "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";                   
                 }else{
-                    return "Farewell!";
+                    return prefix + "Farewell!";
                 }
             case "BB2":
                 if(isFirst){
-                    return "Now that we have a cake the party can go on";
+                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+                    return prefix + "Now that we have a cake the party can go on";
                 }else{
-                    return getBaseAI(input, "Bb", player);
+                    return getBaseAI(input, "Bb", prefix);
+                }
+            case "baker1":
+                if(isFirst){
+                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+                    return prefix + "Hello heres the cake";
+                }else{
+                    return prefix + "Farewell!";
                 }
             case "E1":
                 return "E1";
@@ -88,12 +92,18 @@ public class Quest{
         }
         return Returner;
     }
-    private String getBaseAI(String input, String baseAI, Player player){
+    private String getBaseAI(String input, String baseAI, String prefix){
         switch(baseAI){
             case "TB":
                 
             case "Bb":
-            
+                if(input.contains("love")){
+                    return prefix + "shreck";
+                }else if(input.contains("farewell")){
+                    return prefix + "Farewell!";
+                }else{
+                    return prefix + "idk";
+                }
             case "E":
                 
             case "G":

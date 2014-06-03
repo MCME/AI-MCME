@@ -22,6 +22,7 @@ import org.bukkit.conversations.ConversationAbandonedListener;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.ConversationPrefix;
+import org.bukkit.conversations.MessagePrompt;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
@@ -116,10 +117,21 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input);
             context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
-            if(context.getSessionData("NpcTalk").equals("Farewell!")){
-                return Prompt.END_OF_CONVERSATION;
+            if(context.getSessionData("NpcTalk").toString().contains("Farewell!")){
+                return new ending();
             }
             return new speaking();
+        }
+    }
+    private class ending extends MessagePrompt{
+        @Override
+        protected Prompt getNextPrompt(ConversationContext context) {
+            return Prompt.END_OF_CONVERSATION;
+        }
+
+        @Override
+        public String getPromptText(ConversationContext context) {
+            return context.getSessionData("NpcTalk").toString();
         }
     }
 }

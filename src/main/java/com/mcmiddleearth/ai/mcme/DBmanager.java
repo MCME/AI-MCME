@@ -41,6 +41,9 @@ public class DBmanager {
         boolean successful = true;
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
+        if(start.exists()){
+            start.delete();
+        }
         try {
             FileWriter fr = new FileWriter(start.toString());
             try (PrintWriter writer = new PrintWriter(fr)) {
@@ -105,6 +108,7 @@ public class DBmanager {
                 sort(Boundsz);
                 String npc = s.nextLine();
                 String ai = s.nextLine();
+                AIMCME.getPlugin().getLogger().info(String.valueOf(loaded));
                 String SCanTwice = s.nextLine();
                 boolean canTwice = Boolean.valueOf(SCanTwice);
                 String opened = s.nextLine();
