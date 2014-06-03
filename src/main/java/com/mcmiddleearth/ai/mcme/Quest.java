@@ -69,15 +69,25 @@ public class Quest{
                 if(isFirst){
                     DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
                     return prefix + "Now that we have a cake the party can go on";
+                }else if(input.contains("adventure")&&input.contains("my")){
+                    DBmanager.currQuests.get(player.getName()).setCurrent(id);
+                    return prefix + "Go to Dallen's Tavern in Bree and try to find some gossip. The tavern is near the town square";
+                }else{
+                    return getBaseAI(input, "Bb", prefix);
+                }
+            case "BB3":
+                if(isFirst){
+                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+                    return prefix + "Now that we have a cake the party can go on";
                 }else{
                     return getBaseAI(input, "Bb", prefix);
                 }
             case "baker1":
                 if(isFirst){
                     DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return prefix + "Hello heres the cake";
+                    return prefix + "Oh, I'll send it over right away";
                 }else{
-                    return prefix + "Farewell!";
+                    return prefix + "Can't talk now, Farewell!";
                 }
             case "E1":
                 return "E1";

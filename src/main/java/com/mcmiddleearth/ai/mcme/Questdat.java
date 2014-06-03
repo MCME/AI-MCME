@@ -36,6 +36,9 @@ public class Questdat {
     public int getCurrent(){
         return current;
     }
+    public void setCurrent(int v){
+        current=v;
+    }
     public void stopQuest(){
         this.current = -1;
         DBmanager.saveclass(player);
