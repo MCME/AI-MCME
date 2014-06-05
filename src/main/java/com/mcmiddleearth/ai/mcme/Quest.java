@@ -27,10 +27,12 @@ public class Quest{
     private List<Integer> requiredQuest = new ArrayList<Integer>();
     
     private String npc;
-    private String ai;
+    private String aiid;
     
     private boolean walking;
     private boolean canTwice;
+    
+    private npcai ai;
     
     public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr, boolean canTwice){
         this.id = id;
@@ -38,69 +40,17 @@ public class Quest{
         this.Boundsz = Boundsz;
         this.Keys = Keys;
         this.npc = npc;
-        this.ai = ai;
+        this.aiid = ai;
         this.requiredQuest = opened;
         this.needCurr = curr;
         this.walking = false;
         this.canTwice = canTwice;
+        this.ai = new npcai(this.aiid);
     }
     public String getAI(String input, boolean isFirst, Player player){
         String prefix = ChatColor.AQUA + "";
         prefix = prefix + npc + ": " + ChatColor.GRAY;
-        String Returner = "";
-        input = input.toLowerCase();
-        switch(ai){
-            case "TB1":
-                if(input.contains("star") && input.contains("dunedain")){
-                    return "I think there is a star in Bag End...Somewhere";
-                }else if(isFirst){
-                    return prefix + "Goodmorning";
-                }else{
-                    return getBaseAI(input, "TB", prefix);
-                }
-            case "BB1":
-                if(isFirst){
-                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return prefix + "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";                   
-                }else{
-                    return prefix + "Farewell!";
-                }
-            case "BB2":
-                if(isFirst){
-                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return prefix + "Now that we have a cake the party can go on";
-                }else if(input.contains("adventure")&&input.contains("my")){
-                    DBmanager.currQuests.get(player.getName()).setCurrent(id);
-                    return prefix + "Go to Dallen's Tavern in Bree and try to find some gossip. The tavern is near the town square";
-                }else{
-                    return getBaseAI(input, "Bb", prefix);
-                }
-            case "BB3":
-                if(isFirst){
-                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return prefix + "Now that we have a cake the party can go on";
-                }else{
-                    return getBaseAI(input, "Bb", prefix);
-                }
-            case "baker1":
-                if(isFirst){
-                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return prefix + "Oh, I'll send it over right away";
-                }else{
-                    return prefix + "Can't talk now, Farewell!";
-                }
-            case "E1":
-                return "E1";
-            case "E2":
-                return "E2";
-            case "E3":
-                return "E3";
-            case "IK1":
-                return "IK1";
-            case "N1":
-                return "N1";
-        }
-        return Returner;
+        return prefix + ai.compute(input, isFirst);
     }
     private String getBaseAI(String input, String baseAI, String prefix){
         switch(baseAI){

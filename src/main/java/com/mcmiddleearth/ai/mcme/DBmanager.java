@@ -36,6 +36,8 @@ public class DBmanager {
     
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
+    public static final TreeMap<String, npcai> AIs = new TreeMap();
+    
     public static void saveclass(Player player){
         firstLoad();
         boolean successful = true;
@@ -108,7 +110,7 @@ public class DBmanager {
                 sort(Boundsz);
                 String npc = s.nextLine();
                 String ai = s.nextLine();
-                AIMCME.getPlugin().getLogger().info(String.valueOf(loaded));
+                //AIMCME.getPlugin().getLogger().info(String.valueOf(loaded));
                 String SCanTwice = s.nextLine();
                 boolean canTwice = Boolean.valueOf(SCanTwice);
                 String opened = s.nextLine();
@@ -149,10 +151,38 @@ public class DBmanager {
         if(!save.exists()){
             save.mkdir();
         }
+        File AIdb = new File(questDB + System.getProperty("file.separator") + "AIs");
+        if(!AIdb.exists()){
+            AIdb.mkdir();
+        }
     }
     public static boolean hasSave(Player player){
         String uuid = player.getUniqueId().toString();
         File loc = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + uuid + ".questdat");
         return loc.exists();
+    }
+    public static int Load_AI() throws FileNotFoundException{
+        int Loaded=0;
+        File aiDB = new File(questDB + System.getProperty("file.separator") + "AIs");
+        String hold;
+        String speach;
+        String key;
+        for(File target : aiDB.listFiles()){
+            Scanner s;
+            s = new Scanner(target);
+            String tname = target.getName().replace(".ai", "");
+            npcai ai = new npcai(tname);
+            while(s.hasNext()){
+                hold = s.nextLine();
+                List<String> values = Arrays.asList(hold.split(" : "));
+                key = values.get(0);
+                speach = values.get(1);
+                List<String> keys = Arrays.asList(key.split(", "));
+                List<String> rtns = Arrays.asList(speach.split(", "));
+                ai.AIkeys.put(keys, rtns);
+            }
+            AIs.put(tname, ai);
+        }
+        return Loaded;
     }
 }

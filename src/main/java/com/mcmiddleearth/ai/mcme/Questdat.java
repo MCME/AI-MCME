@@ -26,7 +26,7 @@ public class Questdat {
     public Questdat(Player player){
         this.player = player;
         List<Integer> comp = new ArrayList<Integer>();
-        comp.add(-1);
+        comp.add(0);
         this.completed = comp;
         this.current = -1;
     }
