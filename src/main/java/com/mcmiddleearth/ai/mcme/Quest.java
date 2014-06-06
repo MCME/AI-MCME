@@ -50,7 +50,19 @@ public class Quest{
     public String getAI(String input, boolean isFirst, Player player){
         String prefix = ChatColor.AQUA + "";
         prefix = prefix + npc + ": " + ChatColor.GRAY;
-        return prefix + ai.compute(input, isFirst);
+        List<String> rtn = ai.compute(input, isFirst);
+        for(String s : rtn){
+            if(s.equalsIgnoreCase("#done#")){
+                DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+            }else if(s.equalsIgnoreCase("#curr#")){
+                DBmanager.currQuests.get(player.getName()).setCurrent(id);
+            }else if(rtn.get(rtn.size()-1).equalsIgnoreCase(s)){
+               return prefix + s;
+            }else{
+                player.sendMessage(prefix + s);
+            }
+        }
+        return "";
     }
     private String getBaseAI(String input, String baseAI, String prefix){
         switch(baseAI){

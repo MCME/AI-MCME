@@ -31,7 +31,18 @@ public class npcai {
         //return resonce
         List<String> rtn = new ArrayList();
         rtn.clear();
+        List<String> hold3 = new ArrayList();
         List<List<String>> hold2 = new ArrayList();
+        List<String> hold4 = new ArrayList();
+        hold4.add("#last#");
+        if(isFirst){
+            hold3.add("#first#");
+            rtn.addAll(AIkeys.get(hold3));
+            return rtn;
+        }else if(AIkeys.keySet().contains(hold4)){
+            rtn.addAll(AIkeys.get(hold4));
+            return rtn;
+        }
         for(List<String> hold : AIkeys.keySet()){
             boolean works = true;
             for(String s : hold){
@@ -44,85 +55,17 @@ public class npcai {
             }
         }
         if(hold2.isEmpty()){
-            rtn.add("idk");
+            hold4.clear();
+            hold4.add("#idk#");
+            if(AIkeys.containsKey(hold4)){
+                rtn.addAll(AIkeys.get(hold4));//add #idk#
+            }
         }else if(hold2.size() == 1){
             rtn.addAll(AIkeys.get(hold2.get(1)));
         }else{
             rtn.add("dallen messed up big");
-            rtn.add("there are dupes of the ais =(");
+            rtn.add("there are dupes of the ais :c");
         }
         return rtn;
     }
 }
-
-
-//        switch(name){
-//            case "TB1":
-//                if(input.contains("star") && input.contains("dunedain")){
-//                    return "I think there is a star in Bag End...Somewhere";
-//                }else if(isFirst){
-//                    return prefix + "Goodmorning";
-//                }else{
-//                    return getBaseAI(input, "TB", prefix);
-//                }
-//            case "BB1":
-//                if(isFirst){
-//                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-//                    return prefix + "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";                   
-//                }else{
-//                    return prefix + "Farewell!";
-//                }
-//            case "BB2":
-//                if(isFirst){
-//                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-//                    return prefix + "Now that we have a cake the party can go on";
-//                }else if(input.contains("adventure")&&input.contains("my")){
-//                    DBmanager.currQuests.get(player.getName()).setCurrent(id);
-//                    return prefix + "Go to Dallen's Tavern in Bree and try to find some gossip. The tavern is near the town square";
-//                }else{
-//                    return getBaseAI(input, "Bb", prefix);
-//                }
-//            case "baker1":
-//                if(isFirst){
-//                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-//                    return prefix + "Oh, I'll send it over right away";
-//                }else{
-//                    return prefix + "Can't talk now, Farewell!";
-//                }
-//            case "IK1":
-//                if(isFirst){
-//                    return prefix + "Welcome! Is there anything I can get for you?";
-//                }else if(input.contains("adventure")){
-//                    return prefix + "If your looking for a quest you should talk to Ragnar.";
-//                }else if(input.contains("farewell")){
-//                    return prefix + "Farewell!";
-//                }else if(input.contains("food")){
-//                    return prefix + "We are fresh out of food at the moment";
-//                }else if(input.contains("room")){
-//                    return prefix + "We are totaly booked at the moment";
-//                }else{
-//                    return prefix + "I'm afarid I don't understand";
-//                }
-//            case "R1":
-//                if(isFirst){
-//                    return "So your looking for a quest?";
-//                }else if(input.contains("no")){
-//                    return "Oh I must have miss-understood, Farewell";
-//                }else{
-//                    player.sendMessage("I just so happen to have a job");
-//                    player.sendMessage("I need you to search through an old tomb to find a Jurnal");
-//                    player.sendMessage("I know the tomb is in the burrow downs. (/warp BorrowDowns)");
-//                    return "Goodluck, Farewell!";
-//                }
-//            case "R2":
-//                return "R2";
-//            case "N1":
-//                return "N1";
-//            case " ":
-//            case "E1":
-//                return "E1";
-//            case "E2":
-//                return "E2";
-//            case "E3":
-//                return "E3";
-//        }
