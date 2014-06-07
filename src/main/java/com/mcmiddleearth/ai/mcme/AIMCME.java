@@ -6,6 +6,9 @@
 
 package com.mcmiddleearth.ai.mcme;
 
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +29,14 @@ public class AIMCME extends JavaPlugin {
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new JoinListener(), this);
         int Loaded = DBmanager.loadQuests();
+        int AIload = 0;
+        try {
+            AIload = DBmanager.Load_AI();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(AIMCME.class.getName()).log(Level.SEVERE, null, ex);
+        }
         getLogger().info(String.valueOf("Loaded " + Loaded + " Quests"));
+        getLogger().info(String.valueOf("Loaded " + AIload + " AI"));
     }
     @Override
     public void onDisable(){

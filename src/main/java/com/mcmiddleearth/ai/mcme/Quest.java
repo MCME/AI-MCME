@@ -7,6 +7,7 @@
 package com.mcmiddleearth.ai.mcme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,7 +33,7 @@ public class Quest{
     private boolean walking;
     private boolean canTwice;
     
-    private npcai ai;
+    private HashMap<List<String>, List<String>> ai = new HashMap<List<String>, List<String>>();
     
     public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr, boolean canTwice){
         this.id = id;
@@ -45,12 +46,18 @@ public class Quest{
         this.needCurr = curr;
         this.walking = false;
         this.canTwice = canTwice;
-        this.ai = new npcai(this.aiid);
+    }
+    private void setAI(){
+        if(this.ai.isEmpty()){
+            this.ai.putAll(DBmanager.AIs.get(aiid));
+        }
     }
     public String getAI(String input, boolean isFirst, Player player){
+        setAI();
+//        AIMCME.getPlugin().getLogger().info(ai.toString());
         String prefix = ChatColor.AQUA + "";
         prefix = prefix + npc + ": " + ChatColor.GRAY;
-        List<String> rtn = ai.compute(input, isFirst);
+        List<String> rtn = compute(input, isFirst);
         for(String s : rtn){
             if(s.equalsIgnoreCase("#done#")){
                 DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
@@ -59,7 +66,8 @@ public class Quest{
             }else if(rtn.get(rtn.size()-1).equalsIgnoreCase(s)){
                return prefix + s;
             }else{
-                player.sendMessage(prefix + s);
+                AIMCME.getPlugin().getLogger().info(s);
+                player.sendMessage(String.valueOf(prefix + s));
             }
         }
         return "";
@@ -82,6 +90,51 @@ public class Quest{
                 
         }
         return "";
+    }
+    private List<String> compute(String input, boolean isFirst){
+        input = input.toLowerCase();
+        List<String> rtn = new ArrayList();
+        rtn.clear();
+        List<String> hold3 = new ArrayList();
+        List<List<String>> hold2 = new ArrayList();
+        List<String> hold4 = new ArrayList();
+        hold4.add("#last#");
+//        AIMCME.getPlugin().getLogger().info(name + " : " + this.AIkeys.toString());
+        AIMCME.getPlugin().getLogger().info(ai.toString());
+        if(isFirst){
+            hold3.add("#first#");
+//            AIMCME.getPlugin().getLogger().info(ai.get(hold3).toString());
+            rtn.addAll(ai.get(hold3));
+            return rtn;
+        }else if(ai.keySet().contains(hold4)){
+            rtn.addAll(ai.get(hold4));
+            return rtn;
+        }
+        for(List<String> hold : ai.keySet()){
+            boolean works = true;
+            for(String s : hold){
+               if(!input.contains(s)){
+                   works = false;
+               }
+            }
+            if(works){
+                hold2.add(hold);
+            }
+        }
+        if(hold2.isEmpty()){
+            hold4.clear();
+            hold4.add("#idk#");
+            rtn.addAll(hold4);
+//            if(ai.containsKey(hold4)){
+//                rtn.addAll("idk");//add #idk#
+//            }
+        }else if(hold2.size() == 1){
+            rtn.addAll(ai.get(hold2.get(1)));
+        }else{
+            rtn.add("dallen messed up big");
+            rtn.add("there are dupes of the ais :c");
+        }
+        return rtn;
     }
     public boolean isWalking(Player player){
         return this.walking;

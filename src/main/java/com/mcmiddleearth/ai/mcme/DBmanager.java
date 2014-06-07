@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static java.util.Arrays.sort;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -36,13 +37,17 @@ public class DBmanager {
     
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
-    public static final TreeMap<String, npcai> AIs = new TreeMap();
+    public static final TreeMap<String, HashMap<List<String>, List<String>>> AIs = new TreeMap();
     
     public static void saveclass(Player player){
         firstLoad();
         boolean successful = true;
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
+        if(finished.exists()){
+            finished.delete();
+        }
+        start.renameTo(finished);
         if(start.exists()){
             start.delete();
         }
@@ -64,9 +69,9 @@ public class DBmanager {
         }
         if (successful) {
             if(finished.exists()){
-                AIMCME.getPlugin().getLogger().info(String.valueOf(finished.delete()));
+                finished.delete();
             }
-            AIMCME.getPlugin().getLogger().info(String.valueOf(start.renameTo(finished)));
+            start.renameTo(finished);
         }
     }
     public static void loadclass(Player player){
@@ -137,7 +142,7 @@ public class DBmanager {
             loaded++;
             questSave = new File(QuestDB, + loaded +  ".quest");
         }
-        return loaded-1;
+        return loaded;
     }
     public static void firstLoad(){
         if(!questDB.exists()) {
@@ -168,20 +173,22 @@ public class DBmanager {
         String speach;
         String key;
         for(File target : aiDB.listFiles()){
+            HashMap<List<String>, List<String>> AIkeyhold = new HashMap<List<String>, List<String>>();
             Scanner s;
             s = new Scanner(target);
             String tname = target.getName().replace(".ai", "");
-            npcai ai = new npcai(tname);
             while(s.hasNext()){
                 hold = s.nextLine();
-                List<String> values = Arrays.asList(hold.split(" : "));
+                List<String> values = Arrays.asList(hold.split("\\s*:\\s*"));
                 key = values.get(0);
                 speach = values.get(1);
-                List<String> keys = Arrays.asList(key.split(", "));
-                List<String> rtns = Arrays.asList(speach.split(", "));
-                ai.AIkeys.put(keys, rtns);
+                List<String> keys = Arrays.asList(key.split(",\\s*"));
+                List<String> rtns = Arrays.asList(speach.split(",\\s*"));
+                AIkeyhold.put(keys, rtns);
             }
-            AIs.put(tname, ai);
+            AIMCME.getPlugin().getLogger().info(tname);
+            AIs.put(tname, AIkeyhold);
+            Loaded++;
         }
         return Loaded;
     }
