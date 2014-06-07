@@ -44,12 +44,9 @@ public class DBmanager {
         boolean successful = true;
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
-        if(finished.exists()){
+        if(finished.exists()&&start.exists()){
             finished.delete();
-        }
-        start.renameTo(finished);
-        if(start.exists()){
-            start.delete();
+            start.renameTo(finished);
         }
         try {
             FileWriter fr = new FileWriter(start.toString());
@@ -76,6 +73,12 @@ public class DBmanager {
     }
     public static void loadclass(Player player){
         firstLoad();
+        File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
+        File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
+        if(finished.exists()&&start.exists()){
+            finished.delete();
+            start.renameTo(finished);
+        }
         File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat");
         if (save.exists()) {
             try {
@@ -184,9 +187,12 @@ public class DBmanager {
                 speach = values.get(1);
                 List<String> keys = Arrays.asList(key.split(",\\s*"));
                 List<String> rtns = Arrays.asList(speach.split(",\\s*"));
+                for(String h : keys){
+                    keys.remove(h);
+                    keys.add(h.toLowerCase());
+                }
                 AIkeyhold.put(keys, rtns);
             }
-            AIMCME.getPlugin().getLogger().info(tname);
             AIs.put(tname, AIkeyhold);
             Loaded++;
         }

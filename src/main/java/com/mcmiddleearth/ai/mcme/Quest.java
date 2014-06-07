@@ -66,7 +66,6 @@ public class Quest{
             }else if(rtn.get(rtn.size()-1).equalsIgnoreCase(s)){
                return prefix + s;
             }else{
-                AIMCME.getPlugin().getLogger().info(s);
                 player.sendMessage(String.valueOf(prefix + s));
             }
         }
@@ -100,7 +99,7 @@ public class Quest{
         List<String> hold4 = new ArrayList();
         hold4.add("#last#");
 //        AIMCME.getPlugin().getLogger().info(name + " : " + this.AIkeys.toString());
-        AIMCME.getPlugin().getLogger().info(ai.toString());
+//        AIMCME.getPlugin().getLogger().info(ai.toString());
         if(isFirst){
             hold3.add("#first#");
 //            AIMCME.getPlugin().getLogger().info(ai.get(hold3).toString());
@@ -129,7 +128,7 @@ public class Quest{
 //                rtn.addAll("idk");//add #idk#
 //            }
         }else if(hold2.size() == 1){
-            rtn.addAll(ai.get(hold2.get(1)));
+            rtn.addAll(ai.get(hold2.get(0)));
         }else{
             rtn.add("dallen messed up big");
             rtn.add("there are dupes of the ais :c");

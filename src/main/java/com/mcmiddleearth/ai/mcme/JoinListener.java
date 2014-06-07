@@ -28,7 +28,6 @@ public class JoinListener implements Listener{
             Questdat hold = new Questdat(player);
             DBmanager.currQuests.put(player.getName(), hold);
             saveclass(player);
-            getLogger().info("new load");
         }
         DBmanager.loadclass(player);
     }

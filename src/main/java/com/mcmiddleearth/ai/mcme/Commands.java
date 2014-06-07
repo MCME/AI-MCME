@@ -6,12 +6,8 @@
 
 package com.mcmiddleearth.ai.mcme;
 
-import java.awt.Polygon;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -61,7 +57,6 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                 for(Integer i : DBmanager.Quests.keySet()){
                     if (DBmanager.Quests.get(i).inBounds(player) && DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player) && DBmanager.Quests.get(i).canTwice(player)){//&& DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player)
                         ids2.add(i);
-                        player.sendMessage(String.valueOf(i));
                     }
                 }
                 if(ids2.size()==1){
@@ -115,7 +110,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         }
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
-            context.setSessionData("PlayerTalk", input);
+            context.setSessionData("PlayerTalk", input.toLowerCase());
             context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
             if(context.getSessionData("NpcTalk").toString().toLowerCase().contains("farewell")){
                 return new ending();
