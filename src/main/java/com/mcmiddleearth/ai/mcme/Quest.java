@@ -52,7 +52,10 @@ public class Quest{
             this.ai.putAll(DBmanager.AIs.get(aiid));
         }
     }
-    public String getAI(String input, boolean isFirst, Player player){
+    public String getAI(String input, boolean isFirst, Player player) throws InterruptedException{
+        if(!isFirst){
+            player.sendMessage(String.valueOf(ChatColor.YELLOW + player.getName() + ": " + ChatColor.GRAY + input));
+        }
         setAI();
 //        AIMCME.getPlugin().getLogger().info(ai.toString());
         String prefix = ChatColor.AQUA + "";
@@ -67,9 +70,13 @@ public class Quest{
                return prefix + s;
             }else{
                 player.sendMessage(String.valueOf(prefix + s));
+                Thread.sleep(1000);
             }
         }
         return "";
+    }
+    public void getOps(Player player){
+        player.sendMessage(String.valueOf(ai.keySet()));
     }
     private String getBaseAI(String input, String baseAI, String prefix){
         switch(baseAI){
@@ -123,10 +130,13 @@ public class Quest{
         if(hold2.isEmpty()){
             hold4.clear();
             hold4.add("#idk#");
-            rtn.addAll(hold4);
-//            if(ai.containsKey(hold4)){
-//                rtn.addAll("idk");//add #idk#
-//            }
+            if(ai.containsKey(hold4)){
+                rtn.addAll(ai.get(hold4));
+            }else{
+                hold4.clear();
+                hold4.add("I don't understand");
+                rtn.addAll(hold4);
+            }
         }else if(hold2.size() == 1){
             rtn.addAll(ai.get(hold2.get(0)));
         }else{

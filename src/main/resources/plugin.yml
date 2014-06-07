@@ -1,6 +1,6 @@
 name: AIMCME
 main: com.mcmiddleearth.ai.mcme.AIMCME
-version: ${project.version}
+version: 1.5.1
 website: ${project.url}
 authors: [DonoA]
 description: npc conversations.

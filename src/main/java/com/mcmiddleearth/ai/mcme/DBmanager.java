@@ -88,10 +88,10 @@ public class DBmanager {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*"));
                 List<Integer> ids = new ArrayList<Integer>();
                 for(String value : items){
-                    ids.add(Integer.valueOf(value));
+                    ids.add(Integer.parseInt(value));
                 }
                 String l = s.nextLine();
-                int currid = Integer.valueOf(l);
+                int currid = Integer.parseInt(l);
                 Questdat currquest = new Questdat(player, ids, currid);
                 currQuests.put(player.getName(), currquest);
             } catch (IOException ex) {
@@ -133,7 +133,7 @@ public class DBmanager {
                 String line;
                 while (s.hasNext()){
                     line = s.nextLine();
-                    Keys.add(line);
+                    Keys.add(line.toLowerCase());
                     QuestKeys.put(line, loaded);
                 }
                 Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz,ai,values,curr,canTwice);
@@ -187,11 +187,11 @@ public class DBmanager {
                 speach = values.get(1);
                 List<String> keys = Arrays.asList(key.split(",\\s*"));
                 List<String> rtns = Arrays.asList(speach.split(",\\s*"));
+                List<String> Lkeys = new ArrayList();
                 for(String h : keys){
-                    keys.remove(h);
-                    keys.add(h.toLowerCase());
+                    Lkeys.add(h.toLowerCase());
                 }
-                AIkeyhold.put(keys, rtns);
+                AIkeyhold.put(Lkeys, rtns);
             }
             AIs.put(tname, AIkeyhold);
             Loaded++;

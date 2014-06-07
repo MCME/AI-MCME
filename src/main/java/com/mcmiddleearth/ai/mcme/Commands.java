@@ -8,6 +8,8 @@ package com.mcmiddleearth.ai.mcme;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,7 +40,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     public Commands() {
         conversationFactory = new ConversationFactory(AIMCME.getPlugin())
                 .withLocalEcho(false)
-                .withModality(true)
+                .withModality(false)
                 .withFirstPrompt(new speaking())
                 .withTimeout(60)
                 .thatExcludesNonPlayersWithMessage("You must be a player to send this command");
@@ -102,16 +104,25 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPromptText(ConversationContext context) {
             if (context.getSessionData("PlayerTalk") == null) {
-                context.setSessionData("NpcTalk", currQuest.getAI("", true, player));
-            }else{
-                return context.getSessionData("NpcTalk").toString();
+                try {
+                    context.setSessionData("NpcTalk", currQuest.getAI("", true, player));
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+//            else{
+//                return context.getSessionData("NpcTalk").toString();
+//            }
             return context.getSessionData("NpcTalk").toString();
         }
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
             context.setSessionData("PlayerTalk", input.toLowerCase());
-            context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
+            try {
+                context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if(context.getSessionData("NpcTalk").toString().toLowerCase().contains("farewell")){
                 return new ending();
             }
