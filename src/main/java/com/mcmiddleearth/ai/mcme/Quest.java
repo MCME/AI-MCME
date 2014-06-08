@@ -75,25 +75,14 @@ public class Quest{
         }
         return "";
     }
-    public void getOps(Player player){
-        player.sendMessage(String.valueOf(ai.keySet()));
-    }
-    private String getBaseAI(String input, String baseAI, String prefix){
-        switch(baseAI){
-            case "TB":
-                
-            case "Bb":
-                if(input.contains("love")){
-                    return prefix + "shreck";
-                }else if(input.contains("farewell")){
-                    return prefix + "Farewell!";
-                }else{
-                    return prefix + "idk";
-                }
-            case "E":
-                
-            case "G":
-                
+    public String getOps(){
+        List<String> hold = new ArrayList();
+        String rtn = ChatColor.GREEN + "";
+        hold.add("#ops#"); 
+        if(ai.containsKey(hold)){
+            rtn += ai.get(hold);
+            rtn = rtn.substring(0, rtn.length()-2);
+            return rtn;
         }
         return "";
     }

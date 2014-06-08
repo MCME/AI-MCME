@@ -186,16 +186,26 @@ public class DBmanager {
                 key = values.get(0);
                 speach = values.get(1);
                 List<String> keys = Arrays.asList(key.split(",\\s*"));
-                List<String> rtns = Arrays.asList(speach.split(",\\s*"));
-                List<String> Lkeys = new ArrayList();
-                for(String h : keys){
-                    Lkeys.add(h.toLowerCase());
+                List<String> k = new ArrayList();
+                k.add("#ops#");
+                if(keys.equals(k)){
+                    AIkeyhold.put(k, Arrays.asList(speach));
+                }else{
+                    List<String> rtns = Arrays.asList(speach.split(",\\s*"));
+                    List<String> Lkeys = new ArrayList();
+                    for(String h : keys){
+                        Lkeys.add(h.toLowerCase());
+                    }
+                    AIkeyhold.put(Lkeys, rtns);
                 }
-                AIkeyhold.put(Lkeys, rtns);
             }
             AIs.put(tname, AIkeyhold);
             Loaded++;
         }
         return Loaded;
+    }
+    public void reload() throws FileNotFoundException{
+        Load_AI();
+        loadQuests();
     }
 }

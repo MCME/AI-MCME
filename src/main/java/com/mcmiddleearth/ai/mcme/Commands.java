@@ -81,6 +81,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
             Questdat hold = DBmanager.currQuests.get(player.getName());
             hold.stopQuest();
         }
+        
         return false;
     }
 
@@ -110,10 +111,8 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                     Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-//            else{
-//                return context.getSessionData("NpcTalk").toString();
-//            }
-            return context.getSessionData("NpcTalk").toString();
+            player.sendMessage(context.getSessionData("NpcTalk").toString());
+            return currQuest.getOps();
         }
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
