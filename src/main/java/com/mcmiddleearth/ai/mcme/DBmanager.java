@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static java.util.Arrays.sort;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -36,11 +37,17 @@ public class DBmanager {
     
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
+    public static final TreeMap<String, HashMap<List<String>, List<String>>> AIs = new TreeMap();
+    
     public static void saveclass(Player player){
         firstLoad();
         boolean successful = true;
         File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
         File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
+        if(finished.exists()&&start.exists()){
+            finished.delete();
+            start.renameTo(finished);
+        }
         try {
             FileWriter fr = new FileWriter(start.toString());
             try (PrintWriter writer = new PrintWriter(fr)) {
@@ -59,13 +66,19 @@ public class DBmanager {
         }
         if (successful) {
             if(finished.exists()){
-                AIMCME.getPlugin().getLogger().info(String.valueOf(finished.delete()));
+                finished.delete();
             }
-            AIMCME.getPlugin().getLogger().info(String.valueOf(start.renameTo(finished)));
+            start.renameTo(finished);
         }
     }
     public static void loadclass(Player player){
         firstLoad();
+        File start = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat.new");
+        File finished = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() + ".questdat");
+        if(finished.exists()&&start.exists()){
+            finished.delete();
+            start.renameTo(finished);
+        }
         File save = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + player.getUniqueId().toString() +  ".questdat");
         if (save.exists()) {
             try {
@@ -75,10 +88,10 @@ public class DBmanager {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*"));
                 List<Integer> ids = new ArrayList<Integer>();
                 for(String value : items){
-                    ids.add(Integer.valueOf(value));
+                    ids.add(Integer.parseInt(value));
                 }
                 String l = s.nextLine();
-                int currid = Integer.valueOf(l);
+                int currid = Integer.parseInt(l);
                 Questdat currquest = new Questdat(player, ids, currid);
                 currQuests.put(player.getName(), currquest);
             } catch (IOException ex) {
@@ -105,6 +118,7 @@ public class DBmanager {
                 sort(Boundsz);
                 String npc = s.nextLine();
                 String ai = s.nextLine();
+                //AIMCME.getPlugin().getLogger().info(String.valueOf(loaded));
                 String SCanTwice = s.nextLine();
                 boolean canTwice = Boolean.valueOf(SCanTwice);
                 String opened = s.nextLine();
@@ -119,7 +133,7 @@ public class DBmanager {
                 String line;
                 while (s.hasNext()){
                     line = s.nextLine();
-                    Keys.add(line);
+                    Keys.add(line.toLowerCase());
                     QuestKeys.put(line, loaded);
                 }
                 Quest q = new Quest(loaded,Keys,npc,Boundsx,Boundsz,ai,values,curr,canTwice);
@@ -131,7 +145,7 @@ public class DBmanager {
             loaded++;
             questSave = new File(QuestDB, + loaded +  ".quest");
         }
-        return loaded-1;
+        return loaded;
     }
     public static void firstLoad(){
         if(!questDB.exists()) {
@@ -145,10 +159,43 @@ public class DBmanager {
         if(!save.exists()){
             save.mkdir();
         }
+        File AIdb = new File(questDB + System.getProperty("file.separator") + "AIs");
+        if(!AIdb.exists()){
+            AIdb.mkdir();
+        }
     }
     public static boolean hasSave(Player player){
         String uuid = player.getUniqueId().toString();
         File loc = new File(questDB + System.getProperty("file.separator") + "PlayerDat" + System.getProperty("file.separator") + uuid + ".questdat");
         return loc.exists();
+    }
+    public static int Load_AI() throws FileNotFoundException{
+        int Loaded=0;
+        File aiDB = new File(questDB + System.getProperty("file.separator") + "AIs");
+        String hold;
+        String speach;
+        String key;
+        for(File target : aiDB.listFiles()){
+            HashMap<List<String>, List<String>> AIkeyhold = new HashMap<List<String>, List<String>>();
+            Scanner s;
+            s = new Scanner(target);
+            String tname = target.getName().replace(".ai", "");
+            while(s.hasNext()){
+                hold = s.nextLine();
+                List<String> values = Arrays.asList(hold.split("\\s*:\\s*"));
+                key = values.get(0);
+                speach = values.get(1);
+                List<String> keys = Arrays.asList(key.split(",\\s*"));
+                List<String> rtns = Arrays.asList(speach.split(",\\s*"));
+                List<String> Lkeys = new ArrayList();
+                for(String h : keys){
+                    Lkeys.add(h.toLowerCase());
+                }
+                AIkeyhold.put(Lkeys, rtns);
+            }
+            AIs.put(tname, AIkeyhold);
+            Loaded++;
+        }
+        return Loaded;
     }
 }

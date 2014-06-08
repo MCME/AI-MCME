@@ -7,6 +7,7 @@
 package com.mcmiddleearth.ai.mcme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -27,10 +28,12 @@ public class Quest{
     private List<Integer> requiredQuest = new ArrayList<Integer>();
     
     private String npc;
-    private String ai;
+    private String aiid;
     
     private boolean walking;
     private boolean canTwice;
+    
+    private HashMap<List<String>, List<String>> ai = new HashMap<List<String>, List<String>>();
     
     public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr, boolean canTwice){
         this.id = id;
@@ -38,68 +41,109 @@ public class Quest{
         this.Boundsz = Boundsz;
         this.Keys = Keys;
         this.npc = npc;
-        this.ai = ai;
+        this.aiid = ai;
         this.requiredQuest = opened;
         this.needCurr = curr;
         this.walking = false;
         this.canTwice = canTwice;
     }
-    public String getAI(String input, boolean isFirst, Player player){
+    private void setAI(){
+        if(this.ai.isEmpty()){
+            this.ai.putAll(DBmanager.AIs.get(aiid));
+        }
+    }
+    public String getAI(String input, boolean isFirst, Player player) throws InterruptedException{
+        if(!isFirst){
+            player.sendMessage(String.valueOf(ChatColor.YELLOW + player.getName() + ": " + ChatColor.GRAY + input));
+        }
+        setAI();
+//        AIMCME.getPlugin().getLogger().info(ai.toString());
         String prefix = ChatColor.AQUA + "";
         prefix = prefix + npc + ": " + ChatColor.GRAY;
-        String Returner = "";
-        input = input.toLowerCase();
-        switch(ai){
-            case "TB1":
-                if(input.contains("star") && input.contains("dunedain")){
-                    return "I think there is a star in Bag End...Somewhere";
-                }else if(isFirst){
-                    return prefix + "Goodmorning";
-                }else{
-                    Returner = getBaseAI(input, "TB", player);
-                    if(Returner.equals("-1")){
-                        return prefix + "I don't understand...";
-                    }
-                    return prefix + Returner;
-                }
-            case "BB1":
-                if(isFirst){
-                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-                    return "Thank goodness your here. I need you to go order a cake for me from Bagshot Row";                   
-                }else{
-                    return "Farewell!";
-                }
-            case "BB2":
-                if(isFirst){
-                    return "Now that we have a cake the party can go on";
-                }else{
-                    return getBaseAI(input, "Bb", player);
-                }
-            case "E1":
-                return "E1";
-            case "E2":
-                return "E2";
-            case "E3":
-                return "E3";
-            case "IK1":
-                return "IK1";
-            case "N1":
-                return "N1";
+        List<String> rtn = compute(input, isFirst);
+        for(String s : rtn){
+            if(s.equalsIgnoreCase("#done#")){
+                DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+            }else if(s.equalsIgnoreCase("#curr#")){
+                DBmanager.currQuests.get(player.getName()).setCurrent(id);
+            }else if(rtn.get(rtn.size()-1).equalsIgnoreCase(s)){
+               return prefix + s;
+            }else{
+                player.sendMessage(String.valueOf(prefix + s));
+                Thread.sleep(1000);
+            }
         }
-        return Returner;
+        return "";
     }
-    private String getBaseAI(String input, String baseAI, Player player){
+    public void getOps(Player player){
+        player.sendMessage(String.valueOf(ai.keySet()));
+    }
+    private String getBaseAI(String input, String baseAI, String prefix){
         switch(baseAI){
             case "TB":
                 
             case "Bb":
-            
+                if(input.contains("love")){
+                    return prefix + "shreck";
+                }else if(input.contains("farewell")){
+                    return prefix + "Farewell!";
+                }else{
+                    return prefix + "idk";
+                }
             case "E":
                 
             case "G":
                 
         }
         return "";
+    }
+    private List<String> compute(String input, boolean isFirst){
+        input = input.toLowerCase();
+        List<String> rtn = new ArrayList();
+        rtn.clear();
+        List<String> hold3 = new ArrayList();
+        List<List<String>> hold2 = new ArrayList();
+        List<String> hold4 = new ArrayList();
+        hold4.add("#last#");
+//        AIMCME.getPlugin().getLogger().info(name + " : " + this.AIkeys.toString());
+//        AIMCME.getPlugin().getLogger().info(ai.toString());
+        if(isFirst){
+            hold3.add("#first#");
+//            AIMCME.getPlugin().getLogger().info(ai.get(hold3).toString());
+            rtn.addAll(ai.get(hold3));
+            return rtn;
+        }else if(ai.keySet().contains(hold4)){
+            rtn.addAll(ai.get(hold4));
+            return rtn;
+        }
+        for(List<String> hold : ai.keySet()){
+            boolean works = true;
+            for(String s : hold){
+               if(!input.contains(s)){
+                   works = false;
+               }
+            }
+            if(works){
+                hold2.add(hold);
+            }
+        }
+        if(hold2.isEmpty()){
+            hold4.clear();
+            hold4.add("#idk#");
+            if(ai.containsKey(hold4)){
+                rtn.addAll(ai.get(hold4));
+            }else{
+                hold4.clear();
+                hold4.add("I don't understand");
+                rtn.addAll(hold4);
+            }
+        }else if(hold2.size() == 1){
+            rtn.addAll(ai.get(hold2.get(0)));
+        }else{
+            rtn.add("dallen messed up big");
+            rtn.add("there are dupes of the ais :c");
+        }
+        return rtn;
     }
     public boolean isWalking(Player player){
         return this.walking;

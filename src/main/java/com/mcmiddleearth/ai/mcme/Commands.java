@@ -6,12 +6,10 @@
 
 package com.mcmiddleearth.ai.mcme;
 
-import java.awt.Polygon;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,6 +20,7 @@ import org.bukkit.conversations.ConversationAbandonedListener;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.ConversationPrefix;
+import org.bukkit.conversations.MessagePrompt;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
@@ -41,7 +40,7 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
     public Commands() {
         conversationFactory = new ConversationFactory(AIMCME.getPlugin())
                 .withLocalEcho(false)
-                .withModality(true)
+                .withModality(false)
                 .withFirstPrompt(new speaking())
                 .withTimeout(60)
                 .thatExcludesNonPlayersWithMessage("You must be a player to send this command");
@@ -60,7 +59,6 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                 for(Integer i : DBmanager.Quests.keySet()){
                     if (DBmanager.Quests.get(i).inBounds(player) && DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player) && DBmanager.Quests.get(i).canTwice(player)){//&& DBmanager.Quests.get(i).MatchKeys(argz) && DBmanager.Quests.get(i).isUnlocked(player)
                         ids2.add(i);
-                        player.sendMessage(String.valueOf(i));
                     }
                 }
                 if(ids2.size()==1){
@@ -106,20 +104,40 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
         @Override
         public String getPromptText(ConversationContext context) {
             if (context.getSessionData("PlayerTalk") == null) {
-                context.setSessionData("NpcTalk", currQuest.getAI("", true, player));
-            }else{
-                return context.getSessionData("NpcTalk").toString();
+                try {
+                    context.setSessionData("NpcTalk", currQuest.getAI("", true, player));
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+//            else{
+//                return context.getSessionData("NpcTalk").toString();
+//            }
             return context.getSessionData("NpcTalk").toString();
         }
         @Override
         public Prompt acceptInput(ConversationContext context, String input) {
-            context.setSessionData("PlayerTalk", input);
-            context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
-            if(context.getSessionData("NpcTalk").equals("Farewell!")){
-                return Prompt.END_OF_CONVERSATION;
+            context.setSessionData("PlayerTalk", input.toLowerCase());
+            try {
+                context.setSessionData("NpcTalk", currQuest.getAI(input, false, player));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Commands.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(context.getSessionData("NpcTalk").toString().toLowerCase().contains("farewell")){
+                return new ending();
             }
             return new speaking();
+        }
+    }
+    private class ending extends MessagePrompt{
+        @Override
+        protected Prompt getNextPrompt(ConversationContext context) {
+            return Prompt.END_OF_CONVERSATION;
+        }
+
+        @Override
+        public String getPromptText(ConversationContext context) {
+            return context.getSessionData("NpcTalk").toString();
         }
     }
 }
