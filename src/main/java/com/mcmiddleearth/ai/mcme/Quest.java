@@ -81,7 +81,7 @@ public class Quest{
         hold.add("#ops#"); 
         if(ai.containsKey(hold)){
             rtn += ai.get(hold);
-            rtn = rtn.substring(0, rtn.length()-2);
+            rtn = rtn.substring(1, rtn.length()-1);
             return rtn;
         }
         return "";
