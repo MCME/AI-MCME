@@ -21,3 +21,20 @@ DBmanager keeps track of classes and save files as well as several hashmaps of Q
   - `loadquest(player)` | loads the players questdat
   - `loadQuests` | loads all the quests in QuestDB and returns the number of quests loaded
   - `firstLoad` | makes sure the DB files are setup and ready to be loaded
+
+There are also four filetypes that this plugin uses. These are used in the databases and stored in the `Quests.zip` and `AIs.zip`
+- `playerdat` and `playerdat.new` the name of the file is the players UUID
+    -Line 1: quests completed by this player
+    -Line 2: the current quest the player is on
+- `quest` this is named the quest id, starts at 0
+    -Line 1: Z bound 1
+    -Line 2: Z bound 2
+    -Line 3: X bound 1
+    -Line 4: X bound 2
+    -Line 5: NPC name
+    -Line 6: ai-id
+    -Line 7: required quests 0=none (csv form)
+    -Line 8: required current quest -1=none
+    -the rest of the lines are required key words, one line per word
+- `ai` the name of these files are the ai-id defined in the quest file
+    - keys : response
