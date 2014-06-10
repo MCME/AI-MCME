@@ -27,20 +27,20 @@ public class Quest{
     private List<String> Keys = new ArrayList<String>();
     private List<Integer> requiredQuest = new ArrayList<Integer>();
     
-    private String npc;
+    private String npcname;
     private String aiid;
     
     private boolean walking;
     private boolean canTwice;
     
-    private HashMap<List<String>, List<String>> ai = new HashMap<List<String>, List<String>>();
+    private npc npc;
     
     public Quest(int id, List<String> Keys, String npc, int Boundsx[], int Boundsz[], String ai, List<Integer> opened, int curr, boolean canTwice){
         this.id = id;
         this.Boundsx = Boundsx;
         this.Boundsz = Boundsz;
         this.Keys = Keys;
-        this.npc = npc;
+        this.npcname = npc;
         this.aiid = ai;
         this.requiredQuest = opened;
         this.needCurr = curr;
@@ -48,8 +48,8 @@ public class Quest{
         this.canTwice = canTwice;
     }
     private void setAI(){
-        if(this.ai.isEmpty()){
-            this.ai.putAll(DBmanager.AIs.get(aiid));
+        if(npc == null){
+            npc = DBmanager.AIs.get(aiid);
         }
     }
     public String getAI(String input, boolean isFirst, Player player) throws InterruptedException{
@@ -60,7 +60,7 @@ public class Quest{
 //        AIMCME.getPlugin().getLogger().info(ai.toString());
         String prefix = ChatColor.AQUA + "";
         prefix = prefix + npc + ": " + ChatColor.GRAY;
-        List<String> rtn = compute(input, isFirst);
+        List<String> rtn = npc.compute(input, isFirst);
         for(String s : rtn){
             if(s.equalsIgnoreCase("#done#")){
                 DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
@@ -76,63 +76,7 @@ public class Quest{
         return "";
     }
     public String getOps(){
-        List<String> hold = new ArrayList();
-        String rtn = ChatColor.GREEN + "";
-        hold.add("#ops#"); 
-        if(ai.containsKey(hold)){
-            rtn += ai.get(hold);
-            rtn = rtn.substring(1, rtn.length()-1);
-            return rtn;
-        }
-        return "";
-    }
-    private List<String> compute(String input, boolean isFirst){
-        input = input.toLowerCase();
-        List<String> rtn = new ArrayList();
-        rtn.clear();
-        List<String> hold3 = new ArrayList();
-        List<List<String>> hold2 = new ArrayList();
-        List<String> hold4 = new ArrayList();
-        hold4.add("#last#");
-//        AIMCME.getPlugin().getLogger().info(name + " : " + this.AIkeys.toString());
-//        AIMCME.getPlugin().getLogger().info(ai.toString());
-        if(isFirst){
-            hold3.add("#first#");
-//            AIMCME.getPlugin().getLogger().info(ai.get(hold3).toString());
-            rtn.addAll(ai.get(hold3));
-            return rtn;
-        }else if(ai.keySet().contains(hold4)){
-            rtn.addAll(ai.get(hold4));
-            return rtn;
-        }
-        for(List<String> hold : ai.keySet()){
-            boolean works = true;
-            for(String s : hold){
-               if(!input.contains(s)){
-                   works = false;
-               }
-            }
-            if(works){
-                hold2.add(hold);
-            }
-        }
-        if(hold2.isEmpty()){
-            hold4.clear();
-            hold4.add("#idk#");
-            if(ai.containsKey(hold4)){
-                rtn.addAll(ai.get(hold4));
-            }else{
-                hold4.clear();
-                hold4.add("I don't understand");
-                rtn.addAll(hold4);
-            }
-        }else if(hold2.size() == 1){
-            rtn.addAll(ai.get(hold2.get(0)));
-        }else{
-            rtn.add("dallen messed up big");
-            rtn.add("there are dupes of the ais :c");
-        }
-        return rtn;
+        return npc.getOps();
     }
     public boolean isWalking(Player player){
         return this.walking;
@@ -169,7 +113,7 @@ public class Quest{
         }
     }
     public String getNPC(){
-        return npc;
+        return npcname;
     }
     public boolean inBounds(Player player){
         Location ploc = player.getLocation();

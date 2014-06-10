@@ -37,7 +37,7 @@ public class DBmanager {
     
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
-    public static final TreeMap<String, HashMap<List<String>, List<String>>> AIs = new TreeMap();
+    public static final TreeMap<String, npc> AIs = new TreeMap();
     
     public static void saveclass(Player player){
         firstLoad();
@@ -199,7 +199,8 @@ public class DBmanager {
                     AIkeyhold.put(Lkeys, rtns);
                 }
             }
-            AIs.put(tname, AIkeyhold);
+            
+            AIs.put(tname, new npc(tname, AIkeyhold));
             Loaded++;
         }
         return Loaded;
