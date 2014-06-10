@@ -28,7 +28,7 @@ public class npc {
         String rtn = ChatColor.GREEN + "";
         hold.add("#ops#"); 
         if(ai.containsKey(hold)){
-            rtn += ai.get(hold);
+            rtn = ai.get(hold).toString();
             rtn = rtn.substring(1, rtn.length()-1);
             return rtn;
         }

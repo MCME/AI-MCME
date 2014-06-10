@@ -59,7 +59,7 @@ public class Quest{
         setAI();
 //        AIMCME.getPlugin().getLogger().info(ai.toString());
         String prefix = ChatColor.AQUA + "";
-        prefix = prefix + npc + ": " + ChatColor.GRAY;
+        prefix = prefix + npcname + ": " + ChatColor.GRAY;
         List<String> rtn = npc.compute(input, isFirst);
         for(String s : rtn){
             if(s.equalsIgnoreCase("#done#")){

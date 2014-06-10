@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,7 +45,9 @@ public class AIMCME extends JavaPlugin {
     }
     @Override
     public void onDisable(){
-        
+        for(Player p : Bukkit.getServer().getOnlinePlayers()){
+            DBmanager.saveclass(p);
+        }
     }
     public static AIMCME getPlugin(){
         return pluginInstance;
