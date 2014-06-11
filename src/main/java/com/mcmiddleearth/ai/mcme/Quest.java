@@ -53,30 +53,37 @@ public class Quest{
         }
     }
     public String getAI(String input, boolean isFirst, Player player) throws InterruptedException{
-        if(!isFirst){
-            player.sendMessage(String.valueOf(ChatColor.YELLOW + player.getName() + ": " + ChatColor.GRAY + input));
-        }
-        setAI();
-//        AIMCME.getPlugin().getLogger().info(ai.toString());
-        String prefix = ChatColor.AQUA + "";
-        prefix = prefix + npcname + ": " + ChatColor.GRAY;
-        List<String> rtn = npc.compute(input, isFirst);
-        for(String s : rtn){
-            if(s.equalsIgnoreCase("#done#")){
-                DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
-            }else if(s.equalsIgnoreCase("#curr#")){
-                DBmanager.currQuests.get(player.getName()).setCurrent(id);
-            }else if(rtn.get(rtn.size()-1).equalsIgnoreCase(s)){
-               return prefix + s;
-            }else{
-                player.sendMessage(String.valueOf(prefix + s));
-                Thread.sleep(1000);
+        if(isCooling()){
+            if(!isFirst){
+                player.sendMessage(String.valueOf(ChatColor.YELLOW + player.getName() + ": " + ChatColor.GRAY + input));
             }
+            setAI();
+    //        AIMCME.getPlugin().getLogger().info(ai.toString());
+            String prefix = ChatColor.AQUA + "";
+            prefix = prefix + npcname + ": " + ChatColor.GRAY;
+            List<String> rtn = npc.compute(input, isFirst);
+            for(String s : rtn){
+                if(s.equalsIgnoreCase("#done#")){
+                    DBmanager.currQuests.get(player.getName()).getcompleted().add(id);
+                }else if(s.equalsIgnoreCase("#curr#")){
+                    DBmanager.currQuests.get(player.getName()).setCurrent(id);
+                }else if(rtn.get(rtn.size()-1).equalsIgnoreCase(s)){
+                   return prefix + s;
+                }else{
+                    player.sendMessage(String.valueOf(prefix + s));
+                    Thread.sleep(1000);
+                }
+            }
+            return "";
+        }else{
+            return ChatColor.AQUA + "Doorman: I'm afraid " + npcname + " isn't here";
         }
-        return "";
     }
     public String getOps(){
         return npc.getOps();
+    }
+    public boolean isCooling(){
+        return npc.isCooldown();
     }
     public boolean isWalking(Player player){
         return this.walking;

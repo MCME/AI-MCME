@@ -7,6 +7,7 @@
 package com.mcmiddleearth.ai.mcme;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -19,9 +20,13 @@ import org.bukkit.entity.Player;
 public class npc {
     public HashMap<List<String>, List<String>> ai = new HashMap<List<String>, List<String>>();
     public String tname;
+    boolean onCooldown;
+    Date cooltime;
+    int chance = 100;
     public npc(String name, HashMap<List<String>, List<String>> ais){
         tname=name;
         ai=ais;
+        onCooldown=false;
     }
     public String getOps(){
         List<String> hold = new ArrayList();
@@ -33,6 +38,19 @@ public class npc {
             return rtn;
         }
         return "";
+    }
+    public boolean isCooldown(){
+        int rand = 1;
+        Date now = new Date();
+        if(onCooldown && now.getTime() - cooltime.getTime() > 1*60*1000){
+            onCooldown = false;
+        }else if(!onCooldown && rand > chance){
+            onCooldown = true;
+            cooltime = new Date();
+        }else{
+            onCooldown=false;
+        }
+        return onCooldown;
     }
     public List<String> compute(String input, boolean isFirst){
         input = input.toLowerCase();
