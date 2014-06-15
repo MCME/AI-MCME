@@ -20,13 +20,14 @@ import org.bukkit.entity.Player;
 public class npc {
     public HashMap<List<String>, List<String>> ai = new HashMap<List<String>, List<String>>();
     public String tname;
-    boolean onCooldown;
+    private boolean onCooldown;
     Date cooltime;
-    int chance = 100;
-    public npc(String name, HashMap<List<String>, List<String>> ais){
+    int chance = 75;
+    public npc(String name, HashMap<List<String>, List<String>> ais, int ch){
         tname=name;
         ai=ais;
         onCooldown=false;
+        chance=ch;
     }
     public String getOps(){
         List<String> hold = new ArrayList();
@@ -42,7 +43,7 @@ public class npc {
     public boolean isCooldown(){
         int rand = 1;
         Date now = new Date();
-        if(onCooldown && now.getTime() - cooltime.getTime() > 1*60*1000){
+        if(onCooldown && now.getTime() - cooltime.getTime() > 2*1000){
             onCooldown = false;
         }else if(!onCooldown && rand > chance){
             onCooldown = true;
@@ -50,7 +51,7 @@ public class npc {
         }else{
             onCooldown=false;
         }
-        return onCooldown;
+        return false;
     }
     public List<String> compute(String input, boolean isFirst){
         input = input.toLowerCase();

@@ -112,6 +112,9 @@ public class Commands implements CommandExecutor, ConversationAbandonedListener 
                 }
             }
             player.sendMessage(context.getSessionData("NpcTalk").toString());
+            if(context.getSessionData("NpcTalk").toString().contains(ChatColor.AQUA + "Doorman: "+ChatColor.GRAY+"I'm afraid ")){
+                return "none";
+            }
             return currQuest.getOps();
         }
         @Override

@@ -53,7 +53,9 @@ public class Quest{
         }
     }
     public String getAI(String input, boolean isFirst, Player player) throws InterruptedException{
-        if(isCooling()){
+        setAI();
+//        AIMCME.getPlugin().getLogger().info(String.valueOf(npc.isCooldown()));
+        if(npc.isCooldown()){
             if(!isFirst){
                 player.sendMessage(String.valueOf(ChatColor.YELLOW + player.getName() + ": " + ChatColor.GRAY + input));
             }
@@ -76,14 +78,16 @@ public class Quest{
             }
             return "";
         }else{
-            return ChatColor.AQUA + "Doorman: I'm afraid " + npcname + " isn't here";
+            if(isFirst){
+                return ChatColor.AQUA + "Doorman: "+ChatColor.GRAY+"I'm afraid " + npcname + " isn't here";
+            }else{
+                return ChatColor.AQUA + "Doorman: "+ChatColor.GRAY+"farewell";
+            }
+            //return ChatColor.AQUA + "Doorman: "+ChatColor.GRAY+"I'm afraid " + npcname + " isn't here, farewell";
         }
     }
     public String getOps(){
         return npc.getOps();
-    }
-    public boolean isCooling(){
-        return npc.isCooldown();
     }
     public boolean isWalking(Player player){
         return this.walking;
