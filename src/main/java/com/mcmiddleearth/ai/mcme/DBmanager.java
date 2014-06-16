@@ -204,7 +204,6 @@ public class DBmanager {
                     AIkeyhold.put(Lkeys, rtns);
                 }
             }
-            
             AIs.put(tname, new npc(tname, AIkeyhold, chance));
             Loaded++;
         }
