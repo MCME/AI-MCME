@@ -37,7 +37,7 @@ public class DBmanager {
     
     public static final TreeMap<String, Integer> QuestKeys = new TreeMap();
     
-    public static final TreeMap<String, HashMap<List<String>, List<String>>> AIs = new TreeMap();
+    public static final TreeMap<String, npc> AIs = new TreeMap();
     
     public static void saveclass(Player player){
         firstLoad();
@@ -177,6 +177,7 @@ public class DBmanager {
         String key;
         for(File target : aiDB.listFiles()){
             HashMap<List<String>, List<String>> AIkeyhold = new HashMap<List<String>, List<String>>();
+            int chance = 100;
             Scanner s;
             s = new Scanner(target);
             String tname = target.getName().replace(".ai", "");
@@ -187,9 +188,13 @@ public class DBmanager {
                 speach = values.get(1);
                 List<String> keys = Arrays.asList(key.split(",\\s*"));
                 List<String> k = new ArrayList();
+                List<String> j = new ArrayList();
+                j.add("%%%");
                 k.add("#ops#");
                 if(keys.equals(k)){
                     AIkeyhold.put(k, Arrays.asList(speach));
+                }else if(keys.equals(j)){
+                    chance = Integer.parseInt(speach);
                 }else{
                     List<String> rtns = Arrays.asList(speach.split(",\\s*"));
                     List<String> Lkeys = new ArrayList();
@@ -199,7 +204,7 @@ public class DBmanager {
                     AIkeyhold.put(Lkeys, rtns);
                 }
             }
-            AIs.put(tname, AIkeyhold);
+            AIs.put(tname, new npc(tname, AIkeyhold, chance));
             Loaded++;
         }
         return Loaded;
